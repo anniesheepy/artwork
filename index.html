@@ -185,6 +185,7 @@
   const ref     = params.get('ref');
   const po      = params.get('po');
   const artwork = params.get('artwork');
+  const image   = params.get('image'); 
 
   window.addEventListener('DOMContentLoaded', () => {
     // 檢查是否有必要的驗證參數
@@ -202,51 +203,34 @@
     document.getElementById('info-po-number').textContent = po || '—';
     if (email) document.getElementById('form-email').value = email;
 
-    // 處理 PDF / 圖片 預覽
+    // 處理預覽圖與下載按鈕
     const previewBox = document.getElementById('artwork-preview-box');
     const downloadBtn = document.getElementById('download-link');
 
+    // 處理 1：顯示預覽圖 (Podio Image 欄位)
+    if (image) {
+      // 滿版顯示 JPG
+      previewBox.innerHTML = `<img src="${image}" alt="Artwork Proof" style="width: 100%; height: 100%; object-fit: contain; border-radius: 4px; padding: 10px;">`;
+    } else {
+      previewBox.innerHTML = '<p>No preview image provided.</p>';
+    }
+
+    // 處理 2：設定下方下載按鈕 (Dropbox PDF 連結)
     if (artwork) {
       let finalUrl = artwork;
       
-      // 判斷 1：如果是 Dropbox Transfer 連結
+      // 稍微清理一下 Transfer 連結可能帶有的錯誤參數
       if (finalUrl.includes('/transfer/') || finalUrl.includes('/t/')) {
-        // 為了保險，把可能殘留的 raw=1 洗掉 (避免變成原始碼)
         finalUrl = finalUrl.replace('raw=1', '').replace('?&', '?').replace('&&', '&');
         if (finalUrl.endsWith('?')) finalUrl = finalUrl.slice(0, -1);
-
-        // 顯示漂亮的引導下載按鈕，不使用 iframe
-        previewBox.innerHTML = `
-          <div style="text-align: center; padding: 30px 20px;">
-            <svg style="width: 60px; height: 60px; margin-bottom: 15px; color: #0061FF;" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0L2.4 7.68l9.6 7.68 9.6-7.68L12 0zm0 16.96L2.4 9.28l4.8-3.84L12 9.28l4.8-3.84 4.8 3.84-9.6 7.68zM2.4 14.72l9.6 7.68 9.6-7.68-4.8-3.84-4.8 3.84-4.8-3.84-4.8 3.84z"/></svg>
-            <p style="margin-bottom: 10px; color: #333; font-weight: bold; font-size: 18px;">Artwork is ready on Dropbox</p>
-            <p style="font-size: 14px; color: #666; margin-bottom: 25px;">Due to Dropbox security, transfer files cannot be previewed here. Please open the link to view your proof.</p>
-            <a href="${finalUrl}" target="_blank" style="display: inline-block; padding: 12px 24px; background: #0061FF; color: #fff; text-decoration: none; border-radius: 4px; font-weight: bold; font-size: 15px; transition: background 0.2s; box-shadow: 0 2px 4px rgba(0,97,255,0.2);">Open in Dropbox</a>
-          </div>
-        `;
-        downloadBtn.href = finalUrl;
-        
-      } else {
-        // 判斷 2：如果是一般連結，保留預覽邏輯
-        if (finalUrl.includes('dropbox.com')) {
-          finalUrl = finalUrl.replace('dl=0', 'raw=1');
-          if (!finalUrl.includes('raw=1')) {
-            finalUrl += (finalUrl.includes('?') ? '&' : '?') + 'raw=1';
-          }
-        }
-        
-        downloadBtn.href = finalUrl;
-
-        // 使用 Google Docs Viewer 來渲染外部 PDF，避開跨域 iframe 阻擋問題
-        const viewerUrl = `https://docs.google.com/gview?url=${encodeURIComponent(finalUrl)}&embedded=true`;
-        previewBox.innerHTML = `<iframe src="${viewerUrl}" title="Artwork Proof Preview" style="width:100%; height:100%; border:none;"></iframe>`;
       }
+      
+      downloadBtn.href = finalUrl;
+      downloadBtn.style.display = 'block'; // 確保按鈕顯示
     } else {
-      // 判斷 3：如果根本沒有連結
-      previewBox.innerHTML = '<p>No artwork link provided.</p>';
+      // 如果沒有填寫 Dropbox 連結，就把下載按鈕隱藏起來
       downloadBtn.style.display = 'none';
     }
-  });
 
   // ── 處理表單選單變更 ──
   function handleStatusChange(val) {
