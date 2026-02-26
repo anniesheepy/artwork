@@ -1,0 +1,290 @@
+<style>
+  /* 加上專屬 ID 前綴，確保樣式能在您的網站中生效 */
+  #admart-proof-app {
+    font-family: 'Source Sans Pro', Arial, Helvetica, sans-serif;
+    color: #393B3A;
+    max-width: 1100px;
+    margin: 20px auto;
+    padding: 0 15px;
+    line-height: 1.6;
+    box-sizing: border-box;
+  }
+  #admart-proof-app * { box-sizing: border-box; }
+  #admart-proof-app .hidden { display: none !important; }
+  
+  /* 頂部橫幅 */
+  #admart-proof-app .app-banner {
+    background: linear-gradient(135deg, #393B3A 0%, #555 100%);
+    color: #fff;
+    text-align: center;
+    padding: 30px 20px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+  }
+  #admart-proof-app .app-banner p { margin: 0; color: #AAC568; font-size: 13px; letter-spacing: 2px; text-transform: uppercase; font-weight: bold; }
+  #admart-proof-app .app-banner h1 { margin: 10px 0; font-size: 32px; font-weight: 700; color: #fff; }
+  
+  /* 提示框 */
+  #admart-proof-app .notice-box {
+    background: #fff8e1;
+    border-left: 4px solid #AAC568;
+    padding: 15px 20px;
+    border-radius: 4px;
+    margin-bottom: 30px;
+    font-size: 15px;
+  }
+
+  /* 雙欄排版 */
+  #admart-proof-app .grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 30px;
+  }
+  #admart-proof-app .col { flex: 1 1 400px; }
+
+  /* 卡片設計 */
+  #admart-proof-app .card {
+    background: #fff;
+    border: 1px solid #e5e5e5;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+  }
+  #admart-proof-app .card-header {
+    background: #393B3A;
+    color: #fff;
+    padding: 15px 20px;
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 16px;
+  }
+  #admart-proof-app .card-body { padding: 25px; }
+
+  /* 訂單資訊標籤 */
+  #admart-proof-app .info-tags { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+  #admart-proof-app .info-tag { background: #f0f0f0; padding: 6px 15px; border-radius: 20px; font-size: 14px; color: #333; }
+  #admart-proof-app .info-tag strong { color: #5cb85c; }
+
+  /* PDF 預覽區 */
+  #admart-proof-app .preview-box {
+    background: #f9f9f9;
+    border: 2px dashed #ddd;
+    border-radius: 6px;
+    height: 450px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 15px;
+    overflow: hidden;
+  }
+  #admart-proof-app .preview-box iframe { width: 100%; height: 100%; border: none; }
+
+  /* 按鈕與表單 */
+  #admart-proof-app .form-group { margin-bottom: 18px; }
+  #admart-proof-app label { display: block; font-size: 13px; font-weight: 700; margin-bottom: 6px; text-transform: uppercase; color: #555; }
+  #admart-proof-app input, #admart-proof-app select, #admart-proof-app textarea {
+    width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 4px; font-size: 15px; font-family: inherit;
+  }
+  #admart-proof-app .btn {
+    display: block; width: 100%; padding: 15px; border: none; border-radius: 4px; font-size: 16px; font-weight: 700; text-transform: uppercase; cursor: pointer; text-align: center; text-decoration: none; transition: 0.2s;
+  }
+  #admart-proof-app .btn-download { background: #393B3A; color: #fff; }
+  #admart-proof-app .btn-download:hover { background: #222; color: #fff; }
+  #admart-proof-app .btn-submit { background: #5cb85c; color: #fff; margin-top: 10px; }
+  #admart-proof-app .btn-submit:hover { background: #4cae4c; }
+  #admart-proof-app .btn-submit:disabled { background: #ccc; cursor: not-allowed; }
+
+  /* 錯誤與成功畫面 */
+  #admart-proof-app .alert-error { background: #fff3f3; color: #721c24; padding: 30px; border-radius: 6px; border: 1px solid #f5c6cb; text-align: center; }
+  #admart-proof-app .alert-success { text-align: center; padding: 40px 20px; }
+</style>
+
+<div id="admart-proof-app">
+  
+  <div id="error-screen" class="alert-error hidden">
+    <h2 style="margin-top:0;">⚠️ Link Not Found</h2>
+    <p>This approval link is invalid or missing information.<br>Please contact <a href="mailto:sales@admartproducts.com">sales@admartproducts.com</a> for assistance.</p>
+  </div>
+
+  <div id="main-content" class="hidden">
+    
+    <div class="app-banner">
+      <p>Proof Approval Request</p>
+      <h1 id="banner-title">ORDER #——</h1>
+      <div style="font-size: 15px; opacity: 0.8;">Please review your artwork carefully before submitting your decision.</div>
+    </div>
+
+    <div class="notice-box">
+      📋 Once you submit your approval, your order will proceed to <strong>production</strong>.
+    </div>
+
+    <div class="grid">
+      <div class="col">
+        <div class="card">
+          <div class="card-header">🖼 Your Artwork Proof</div>
+          <div class="card-body">
+            <div class="info-tags">
+              <div class="info-tag">Order: <strong id="info-order-number">—</strong></div>
+              <div class="info-tag">PO: <strong id="info-po-number">—</strong></div>
+            </div>
+            
+            <div id="artwork-preview-box" class="preview-box">
+              <span style="color:#999;">Loading artwork...</span>
+            </div>
+            
+            <a href="#" id="download-link" class="btn btn-download" target="_blank">Download / View Full PDF</a>
+          </div>
+        </div>
+      </div>
+
+      <div class="col">
+        <div class="card">
+          <div class="card-header">✅ Approval Form</div>
+          <div class="card-body">
+            
+            <div id="success-screen" class="alert-success hidden">
+              <h2 style="color: #5cb85c; margin-top:0;">Response Submitted!</h2>
+              <p>Thank you. Your response has been recorded successfully.</p>
+            </div>
+
+            <form id="approval-form">
+              <div class="form-group">
+                <label>First Name *</label>
+                <input type="text" name="first_name" required />
+              </div>
+              <div class="form-group">
+                <label>Last Name *</label>
+                <input type="text" name="last_name" required />
+              </div>
+              <div class="form-group">
+                <label>Email Address *</label>
+                <input type="email" name="email" id="form-email" required />
+              </div>
+              <div class="form-group">
+                <label>Proof Decision *</label>
+                <select name="status" id="status-select" required onchange="handleStatusChange(this.value)">
+                  <option value="">— Please Select —</option>
+                  <option value="Approved">✅ Approved — Proceed to Production</option>
+                  <option value="Changes Requested">🔄 Changes Requested — Do Not Proceed</option>
+                </select>
+              </div>
+              <div class="form-group hidden" id="changes-field">
+                <label>What changes are needed? *</label>
+                <textarea name="change_details" rows="4"></textarea>
+              </div>
+              <button type="submit" class="btn btn-submit" id="submit-btn">Submit Response</button>
+            </form>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ── 填入您的 n8n Submit Webhook URL ──
+  const N8N_SUBMIT_WEBHOOK = 'https://admart.zeabur.app/webhook/artwork-approval/';
+
+  // 讀取網址參數
+  const params  = new URLSearchParams(window.location.search);
+  const pid     = params.get('pid');
+  const email   = params.get('email');
+  const ref     = params.get('ref');
+  const po      = params.get('po');
+  const artwork = params.get('artwork');
+
+  window.addEventListener('DOMContentLoaded', () => {
+    // 若沒有 pid 或 ref，代表使用者不是透過信件連結點進來的，顯示錯誤
+    if (!pid && !ref) {
+      document.getElementById('error-screen').classList.remove('hidden');
+      return;
+    }
+    
+    // 顯示主內容
+    document.getElementById('main-content').classList.remove('hidden');
+
+    // 填入文字資訊
+    const orderRefText = ref || pid || 'Unknown';
+    document.getElementById('banner-title').textContent = `ORDER #${orderRefText}`;
+    document.getElementById('info-order-number').textContent = orderRefText;
+    document.getElementById('info-po-number').textContent = po || '—';
+    if (email) document.getElementById('form-email').value = email;
+
+    // 處理 PDF / 圖片 預覽
+    const previewBox = document.getElementById('artwork-preview-box');
+    const downloadBtn = document.getElementById('download-link');
+
+    if (artwork) {
+      let finalUrl = artwork;
+      
+      // 將 Dropbox dl=0 轉換為 raw=1 以利下載/顯示
+      if (finalUrl.includes('dropbox.com')) {
+        finalUrl = finalUrl.replace('dl=0', 'raw=1');
+        if (!finalUrl.includes('raw=1')) {
+          finalUrl += (finalUrl.includes('?') ? '&' : '?') + 'raw=1';
+        }
+      }
+      
+      downloadBtn.href = finalUrl;
+
+      // 使用 Google Docs Viewer 來渲染外部 PDF，避開 iframe 阻擋問題
+      // 注意：這需要原連結是公開的且檔名為 .pdf
+      const viewerUrl = `https://docs.google.com/gview?url=${encodeURIComponent(finalUrl)}&embedded=true`;
+      
+      previewBox.innerHTML = `<iframe src="${viewerUrl}" title="Artwork Proof Preview"></iframe>`;
+    } else {
+      previewBox.innerHTML = '<p>No artwork link provided.</p>';
+      downloadBtn.style.display = 'none';
+    }
+  });
+
+  // 處理狀態切換顯示文字框
+  function handleStatusChange(val) {
+    const changesField = document.getElementById('changes-field');
+    const textarea = changesField.querySelector('textarea');
+    if (val === 'Changes Requested') {
+      changesField.classList.remove('hidden');
+      textarea.required = true;
+    } else {
+      changesField.classList.add('hidden');
+      textarea.required = false;
+    }
+  }
+
+  // 表單送出處理
+  document.getElementById('approval-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const submitBtn = document.getElementById('submit-btn');
+    submitBtn.disabled = true;
+    submitBtn.textContent = 'Submitting...';
+
+    const fd = new FormData(e.target);
+    const payload = {
+      pid: pid,
+      order_ref: ref,
+      first_name: fd.get('first_name'),
+      last_name: fd.get('last_name'),
+      email: fd.get('email'),
+      status: fd.get('status'),
+      change_details: fd.get('change_details') || '',
+      submitted_at: new Date().toISOString()
+    };
+
+    fetch(N8N_SUBMIT_WEBHOOK, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    })
+    .then(res => {
+      if (!res.ok) throw new Error('Network error');
+      document.getElementById('approval-form').classList.add('hidden');
+      document.getElementById('success-screen').classList.remove('hidden');
+    })
+    .catch(() => {
+      submitBtn.disabled = false;
+      submitBtn.textContent = 'Submit Response';
+      alert('❌ Submission failed. Please try again or contact support.');
+    });
+  });
+</script>
