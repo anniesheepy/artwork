@@ -1,75 +1,77 @@
-<div class="card">
-  <div class="card-header">Your Decision</div>
-  <div class="card-body">
-    
-    <div id="success-screen" class="success-screen hidden">
-      <div style="font-size: 40px; color: #5cb85c; margin-bottom: 10px;">✓</div>
-      <h2 style="color: #5cb85c;">Thank You!</h2>
-      <p>Your response has been recorded successfully.</p>
-    </div>
-
-    <form id="approval-form">
-      <div class="form-group">
-        <label>Full Name *</label>
-        <input type="text" name="full_name" class="form-control" placeholder="Enter your full name" required>
-      </div>
-
-      <div class="form-group">
-        <label>Proof Decision *</label>
-        <select name="status" id="status-select" class="form-control" required onchange="handleStatusChange(this.value)">
-          <option value="">-- Select One --</option>
-          <option value="Approved">✅ Approved (Proceed to Production)</option>
-          <option value="Changes Requested">🔄 Changes Requested (Send New Proof)</option>
-        </select>
-      </div>
-
-      <div id="changes-field" class="form-group hidden">
-        <label>Description of Changes *</label>
-        <textarea name="change_details" class="form-control" placeholder="Please describe the edits you'd like to see..."></textarea>
-      </div>
-
-      <button type="submit" id="submit-btn" class="btn-submit">Submit Decision</button>
-    </form>
-  </div>
-</div>
-
 <script>
-  // 提交時的 Payload 也要同步更新
-  document.getElementById('approval-form').addEventListener('submit', function(e) {
-    e.preventDefault();
-    const btn = document.getElementById('submit-btn');
-    btn.disabled = true;
-    btn.textContent = 'Processing...';
+    // 取得 Webhook 地址 (請確保與您 n8n 一致)
+    const N8N_SUBMIT_WEBHOOK = 'https://admart.zeabur.app/webhook/c8c49617-7257-4155-a9e8-bf44dcb24b39';
 
-    const formData = new FormData(this);
-    const payload = {
-      pid: pid, // 這是隱藏的 Podio ID
-      approver_name: formData.get('full_name'), // 合併後的姓名
-      status: formData.get('status'),
-      change_details: formData.get('change_details') || '',
-      submitted_at: new Date().toISOString()
-    };
+    // ── 解析 URL 參數 ──
+    const params = new URLSearchParams(window.location.search);
+    const pid      = params.get('pid');      // 隱藏的 Podio ID
+    const orderRef = params.get('ref');      // 要顯示的 700000TEST
+    const poNumber = params.get('po');       // PO 號碼
+    const artwork  = params.get('artwork');  // PDF 連結
+    const image    = params.get('image');    // 圖片預覽連結
 
-    fetch(N8N_SUBMIT_WEBHOOK, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(payload)
-    })
-    .then(res => {
-      if (!res.ok) throw new Error();
-      document.getElementById('approval-form').classList.add('hidden');
-      document.getElementById('success-screen').classList.remove('hidden');
-    })
-    .catch(err => {
-      btn.disabled = false;
-      btn.textContent = 'Submit Decision';
-      alert('❌ Submission failed. Please try again.');
+    document.addEventListener('DOMContentLoaded', () => {
+        // 1. 更新標題：顯示 Order Number (ref)
+        const titleEl = document.getElementById('display-order-number');
+        if (titleEl) titleEl.textContent = `ORDER #${orderRef || '—'}`;
+        
+        const poEl = document.getElementById('display-po-number');
+        if (poEl && poNumber) poEl.textContent = `Customer PO: ${poNumber}`;
+
+        // 2. 處理預覽區域
+        const container = document.getElementById('artwork-container');
+        const dlBtn = document.getElementById('download-btn');
+
+        if (image && image !== 'null' && image !== '') {
+            // 如果有圖片連結，直接顯示圖片
+            container.innerHTML = `<img src="${image}" style="max-width:100%; height:auto;" alt="Proof">`;
+        } else if (artwork && artwork !== 'null' && artwork !== '') {
+            // 如果只有 Dropbox，使用 iframe (確保 raw=1)
+            let finalArt = artwork.replace('dl=0', 'raw=1');
+            container.innerHTML = `<iframe src="${finalArt}" style="width:100%; height:600px; border:none;"></iframe>`;
+        } else {
+            container.innerHTML = `<p>No artwork available for preview.</p>`;
+        }
+
+        // 3. 設定下載按鈕
+        if (artwork) {
+            dlBtn.href = artwork;
+            dlBtn.classList.remove('hidden');
+        } else {
+            dlBtn.classList.add('hidden');
+        }
     });
-  });
 
-  function handleStatusChange(val) {
-    const field = document.getElementById('changes-field');
-    field.classList.toggle('hidden', val !== 'Changes Requested');
-    field.querySelector('textarea').required = (val === 'Changes Requested');
-  }
+    // ── 表單提交邏輯 ──
+    document.getElementById('approval-form').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const btn = document.getElementById('submit-btn');
+        btn.disabled = true;
+        btn.textContent = 'Submitting...';
+
+        const payload = {
+            pid: pid, // 傳回 Podio ID 用於更新
+            order_number: orderRef,
+            approver_name: new FormData(this).get('full_name'), // 這是您要的合併姓名
+            status: new FormData(this).get('status'),
+            change_details: new FormData(this).get('change_details') || '',
+            submitted_at: new Date().toISOString()
+        };
+
+        fetch(N8N_SUBMIT_WEBHOOK, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload)
+        })
+        .then(res => {
+            if (!res.ok) throw new Error();
+            document.getElementById('approval-form').classList.add('hidden');
+            document.getElementById('success-screen').classList.remove('hidden');
+        })
+        .catch(() => {
+            btn.disabled = false;
+            btn.textContent = 'Submit Decision';
+            alert('Submission failed. Please check your connection.');
+        });
+    });
 </script>
