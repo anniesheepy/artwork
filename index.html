@@ -2,127 +2,209 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Artwork Approval | ADmart Products</title>
-  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600;700&display=swap" rel="stylesheet"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Artwork Proof Approval | ADmart Products</title>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400;600;700&display=swap" rel="stylesheet" />
   <style>
-    /* 核心樣式 */
+    /* 核心樣式 - 恢復 preferred.html 設計 */
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Source Sans Pro', sans-serif; background: #f5f5f5; color: #333; }
+    body { font-family: 'Source Sans Pro', Arial, Helvetica, sans-serif; color: #393B3A; background: #f5f5f5; font-size: 16px; line-height: 1.6; }
     .hidden { display: none !important; }
-    .header { background: #fff; padding: 15px 40px; border-bottom: 1px solid #ddd; }
-    .banner { background: #393B3A; color: #fff; padding: 30px; text-align: center; }
-    .container { max-width: 1100px; margin: 30px auto; padding: 0 20px; display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 30px; }
-    @media (max-width: 850px) { .container { grid-template-columns: 1fr; } }
-    .card { background: #fff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); overflow: hidden; }
-    .card-header { background: #393B3A; color: #fff; padding: 15px; font-weight: bold; }
-    .card-body { padding: 20px; }
-    .preview-box { background: #eee; min-height: 400px; display: flex; align-items: center; justify-content: center; border: 2px dashed #ccc; }
-    .preview-box img, .preview-box iframe { width: 100%; height: 500px; border: none; }
-    .form-group { margin-bottom: 15px; }
-    .form-control { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; }
-    .btn-submit { width: 100%; background: #5cb85c; color: #fff; padding: 15px; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; }
-    #loading { text-align: center; padding: 50px; }
+    
+    /* Header & Banner */
+    .site-header { background: #fff; border-bottom: 1px solid #e0e0e0; padding: 12px 40px; display: flex; align-items: center; justify-content: space-between; }
+    .site-header img { height: 50px; width: auto; }
+    .page-banner { background: linear-gradient(135deg, #393B3A 0%, #555 100%); color: #fff; text-align: center; padding: 35px 20px; }
+    .page-banner h1 { font-size: 32px; font-weight: 700; margin: 0; text-transform: uppercase; }
+    
+    /* Layout */
+    .main-container { max-width: 1100px; margin: 30px auto; padding: 0 20px; }
+    .content-grid { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 30px; }
+    @media (max-width: 850px) { .content-grid { grid-template-columns: 1fr; } }
+    
+    /* Cards */
+    .card { background: #fff; border: 1px solid #e5e5e5; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
+    .card-header { background: #393B3A; color: #fff; padding: 15px 20px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+    .card-body { padding: 25px; }
+    
+    /* Preview */
+    .artwork-preview-box { background: #f9f9f9; border: 2px dashed #ddd; border-radius: 6px; min-height: 500px; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+    .artwork-preview-box img { max-width: 100%; height: auto; display: block; }
+    .artwork-preview-box iframe { width: 100%; height: 550px; border: none; }
+    
+    /* Form Elements */
+    .form-group { margin-bottom: 20px; }
+    .form-group label { display: block; font-size: 13px; font-weight: 700; color: #393B3A; margin-bottom: 6px; text-transform: uppercase; }
+    .form-control { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 4px; font-size: 15px; }
+    textarea.form-control { min-height: 120px; resize: vertical; }
+    
+    /* Buttons */
+    .btn-submit { width: 100%; background: #5cb85c; color: #fff; padding: 16px; border: none; border-radius: 4px; font-weight: 700; cursor: pointer; text-transform: uppercase; transition: background 0.2s; }
+    .btn-submit:hover { background: #4cae4c; }
+    .btn-download { display: block; text-align: center; background: #393B3A; color: #fff; padding: 12px; border-radius: 4px; text-decoration: none; margin-top: 10px; font-weight: 700; }
+    
+    /* Loading & Status */
+    #loading-screen { text-align: center; padding: 100px 20px; }
+    .success-screen { text-align: center; padding: 20px 0; }
   </style>
 </head>
 <body>
 
-  <div class="header"><img src="https://cdn11.bigcommerce.com/s-mut604cd32/images/stencil/322x115/admart-2022_1641859351__16768.original.png" height="40"></div>
+  <header class="site-header">
+    <img src="https://cdn11.bigcommerce.com/s-mut604cd32/images/stencil/322x115/admart-2022_1641859351__16768.original.png" alt="ADmart Products" />
+  </header>
 
-  <div id="loading"><h2>Loading Order Details...</h2></div>
+  <div id="loading-screen">
+    <div style="width: 40px; height: 40px; border: 4px solid #f3f3f3; border-top: 4px solid #5cb85c; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 20px;"></div>
+    <h2>Fetching Order Details...</h2>
+    <style>@keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }</style>
+  </div>
 
   <div id="main-content" class="hidden">
-    <div class="banner">
-        <h1 id="order-title">ORDER #——</h1>
-        <p id="po-title" style="color:#AAC568;"></p>
+    <div class="page-banner">
+      <h1 id="display-order-number">ORDER #——</h1>
+      <p id="display-po-number" style="color: #AAC568; margin-top: 5px; font-weight: 600;"></p>
     </div>
 
-    <div class="container">
-      <div class="card">
-        <div class="card-header">ARTWORK PROOF</div>
-        <div class="card-body">
-          <div class="preview-box" id="preview-area"></div>
-          <a href="#" id="dl-btn" class="btn-submit" style="display:block; text-align:center; background:#333; margin-top:10px; text-decoration:none;">Download PDF</a>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="card-header">YOUR DECISION</div>
-        <div class="card-body">
-          <div id="success-msg" class="hidden" style="text-align:center; color:#5cb85c;">
-            <h2>✓ Submitted Successfully</h2>
+    <div class="main-container">
+      <div class="content-grid">
+        
+        <div class="card">
+          <div class="card-header">Digital Proof</div>
+          <div class="card-body">
+            <div class="artwork-preview-box" id="preview-area">
+              </div>
+            <a href="#" id="dl-btn" class="btn-download" target="_blank">Download PDF Proof</a>
           </div>
-          <form id="approval-form">
-            <div class="form-group">
-              <label>Full Name *</label>
-              <input type="text" name="full_name" class="form-control" required>
-            </div>
-            <div class="form-group">
-              <label>Decision *</label>
-              <select name="status" class="form-control" required onchange="document.getElementById('change-box').classList.toggle('hidden', this.value !== 'Changes Requested')">
-                <option value="">-- Select --</option>
-                <option value="Approved">✅ Approved</option>
-                <option value="Changes Requested">🔄 Changes Requested</option>
-              </select>
-            </div>
-            <div id="change-box" class="form-group hidden">
-              <label>Description of Changes *</label>
-              <textarea name="details" class="form-control"></textarea>
-            </div>
-            <button type="submit" id="submit-btn" class="btn-submit">Submit Response</button>
-          </form>
         </div>
+
+        <div class="card">
+          <div class="card-header">APPROVAL FORM</div>
+          <div class="card-body">
+            <div id="success-screen" class="success-screen hidden">
+              <div style="font-size: 50px; color: #5cb85c; margin-bottom: 10px;">✓</div>
+              <h2 style="color: #5cb85c;">Thank You!</h2>
+              <p>Your response has been recorded successfully.</p>
+            </div>
+
+            <form id="approval-form">
+              <div class="form-group">
+                <label>Full Name *</label>
+                <input type="text" name="full_name" class="form-control" placeholder="First and Last Name" required>
+              </div>
+
+              <div class="form-group">
+                <label>Proof Decision *</label>
+                <select name="status" id="status-select" class="form-control" required onchange="handleStatusChange(this.value)">
+                  <option value="">-- Select One --</option>
+                  <option value="Approved">✅ Approved (Proceed to Production)</option>
+                  <option value="Changes Requested">🔄 Changes Requested (Send New Proof)</option>
+                </select>
+              </div>
+
+              <div id="changes-field" class="form-group hidden">
+                <label>Description of Changes *</label>
+                <textarea name="change_details" class="form-control" placeholder="Please list the specific edits needed..."></textarea>
+              </div>
+
+              <button type="submit" id="submit-btn" class="btn-submit">Submit Decision</button>
+            </form>
+          </div>
+        </div>
+
       </div>
     </div>
   </div>
 
   <script>
+    // ── 配置 Webhook 地址 ──
     const GET_ORDER_API = 'https://admart.zeabur.app/webhook/get-order';
     const SUBMIT_API    = 'https://admart.zeabur.app/webhook/c8c49617-7257-4155-a9e8-bf44dcb24b39';
     
-    const pid = new URLSearchParams(window.location.search).get('pid');
+    const params = new URLSearchParams(window.location.search);
+    const pid = params.get('pid');
 
     window.onload = () => {
-      if (!pid) { document.getElementById('loading').innerHTML = "<h2>Invalid Link</h2>"; return; }
+      if (!pid) {
+        document.getElementById('loading-screen').innerHTML = "<h2>Invalid Link</h2><p>Please use the link provided in your email.</p>";
+        return;
+      }
       
-      // 拿 PID 問 n8n 資料
+      // ── 從 n8n 抓取資料 ──
       fetch(`${GET_ORDER_API}?pid=${pid}`)
-        .then(res => res.json())
+        .then(res => {
+          if (!res.ok) throw new Error('Data not found');
+          return res.json();
+        })
         .then(data => {
-          document.getElementById('loading').classList.add('hidden');
+          document.getElementById('loading-screen').classList.add('hidden');
           document.getElementById('main-content').classList.remove('hidden');
           
-          document.getElementById('order-title').textContent = `ORDER #${data.order_number}`;
-          if(data.po_number) document.getElementById('po-title').textContent = `PO: ${data.po_number}`;
-          
-          const preview = document.getElementById('preview-area');
-          if (data.image_url) {
-            preview.innerHTML = `<img src="${data.image_url}">`;
-          } else if (data.artwork_url) {
-            preview.innerHTML = `<iframe src="${data.artwork_url.replace('dl=0','raw=1')}"></iframe>`;
+          // 填寫訂單資訊
+          document.getElementById('display-order-number').textContent = `ORDER #${data.order_number || 'N/A'}`;
+          if (data.po_number) {
+            document.getElementById('display-po-number').textContent = `Customer PO: ${data.po_number}`;
           }
-          document.getElementById('dl-btn').href = data.artwork_url || "#";
+          
+          // 處理預覽圖 (優先顯示圖片，若無則顯示 iframe PDF)
+          const preview = document.getElementById('preview-area');
+          if (data.image_url && data.image_url !== "") {
+            preview.innerHTML = `<img src="${data.image_url}" alt="Design Proof">`;
+          } else if (data.artwork_url) {
+            const finalUrl = data.artwork_url.replace('dl=0', 'raw=1');
+            preview.innerHTML = `<iframe src="${finalUrl}"></iframe>`;
+          } else {
+            preview.innerHTML = `<p style="color:#999;">No preview available.</p>`;
+          }
+
+          // 下載按鈕
+          if (data.artwork_url) {
+            document.getElementById('dl-btn').href = data.artwork_url;
+          } else {
+            document.getElementById('dl-btn').classList.add('hidden');
+          }
+        })
+        .catch(err => {
+          console.error(err);
+          document.getElementById('loading-screen').innerHTML = "<h2>Project Not Found</h2><p>We couldn't retrieve the artwork details. Please contact your sales rep.</p>";
         });
     };
 
-    document.getElementById('approval-form').onsubmit = (e) => {
+    function handleStatusChange(val) {
+      const field = document.getElementById('changes-field');
+      field.classList.toggle('hidden', val !== 'Changes Requested');
+      field.querySelector('textarea').required = (val === 'Changes Requested');
+    }
+
+    // ── 提交表單 ──
+    document.getElementById('approval-form').onsubmit = function(e) {
       e.preventDefault();
       const btn = document.getElementById('submit-btn');
       btn.disabled = true;
-      btn.textContent = "Sending...";
+      btn.textContent = "Submitting...";
+
+      const payload = {
+        pid: pid,
+        approver_name: this.full_name.value,
+        status: this.status.value,
+        change_details: this.change_details.value,
+        submitted_at: new Date().toISOString()
+      };
 
       fetch(SUBMIT_API, {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({
-          pid: pid,
-          approver_name: e.target.full_name.value,
-          status: e.target.status.value,
-          change_details: e.target.details.value
-        })
-      }).then(() => {
+        body: JSON.stringify(payload)
+      })
+      .then(res => {
+        if (!res.ok) throw new Error();
         document.getElementById('approval-form').classList.add('hidden');
-        document.getElementById('success-msg').classList.remove('hidden');
+        document.getElementById('success-screen').classList.remove('hidden');
+      })
+      .catch(() => {
+        btn.disabled = false;
+        btn.textContent = "Submit Decision";
+        alert('❌ Submission failed. Please try again.');
       });
     };
   </script>
