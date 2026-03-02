@@ -1,179 +1,75 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Artwork Proof Approval | ADmart Products</title>
-  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400;600;700&display=swap" rel="stylesheet"/>
-  <style>
-    /* 保留您喜愛的專業樣式 */
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Source Sans Pro', Arial, Helvetica, sans-serif; color: #393B3A; background: #f5f5f5; font-size: 16px; line-height: 1.6; }
-    .hidden { display: none !important; }
-    .site-header { background: #fff; border-bottom: 1px solid #e0e0e0; padding: 12px 40px; display: flex; align-items: center; justify-content: space-between; }
-    .site-header img { height: 50px; width: auto; }
-    .site-nav { background: #393B3A; padding: 0 40px; display: flex; align-items: center; }
-    .site-nav .nav-brand { background: #5cb85c; color: #fff; padding: 12px 20px; font-size: 14px; font-weight: 700; text-transform: uppercase; }
-    .page-banner { background: linear-gradient(135deg, #393B3A 0%, #555 100%); color: #fff; text-align: center; padding: 35px 20px; }
-    .page-banner h1 { font-size: 32px; font-weight: 700; margin: 0; }
-    .main-container { max-width: 1100px; margin: 30px auto; padding: 0 20px; }
-    .content-grid { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 30px; }
-    @media (max-width: 850px) { .content-grid { grid-template-columns: 1fr; } }
-    .card { background: #fff; border: 1px solid #e5e5e5; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.05); }
-    .card-header { background: #393B3A; color: #fff; padding: 15px 20px; font-weight: 700; text-transform: uppercase; }
-    .card-body { padding: 25px; }
-    .artwork-preview-box { background: #f9f9f9; border: 2px dashed #ddd; border-radius: 6px; min-height: 500px; display: flex; align-items: center; justify-content: center; }
-    .artwork-preview-box iframe, .artwork-preview-box img { width: 100%; max-height: 600px; border: none; }
-    .form-group { margin-bottom: 20px; }
-    .form-control { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 4px; }
-    .btn-submit { width: 100%; background: #5cb85c; color: #fff; padding: 16px; border: none; border-radius: 4px; font-weight: 700; cursor: pointer; }
-    .btn-download { display: block; text-align: center; background: #393B3A; color: #fff; padding: 12px; border-radius: 4px; text-decoration: none; margin-top: 10px; font-weight: 700; }
-  </style>
-</head>
-<body>
-
-  <header class="site-header">
-    <img src="https://cdn11.bigcommerce.com/s-mut604cd32/images/stencil/322x115/admart-2022_1641859351__16768.original.png" />
-  </header>
-
-  <nav class="site-nav">
-    <span class="nav-brand">Artwork Review</span>
-  </nav>
-
-  <div id="main-content">
-    <div class="page-banner">
-      <h1 id="display-order-number">ORDER #——</h1>
-      <p style="color: #AAC568; margin-top: 5px;" id="display-po-number"></p>
+<div class="card">
+  <div class="card-header">Your Decision</div>
+  <div class="card-body">
+    
+    <div id="success-screen" class="success-screen hidden">
+      <div style="font-size: 40px; color: #5cb85c; margin-bottom: 10px;">✓</div>
+      <h2 style="color: #5cb85c;">Thank You!</h2>
+      <p>Your response has been recorded successfully.</p>
     </div>
 
-    <div class="main-container">
-      <div class="content-grid">
-        
-        <div class="card">
-          <div class="card-header">Digital Proof</div>
-          <div class="card-body">
-            <div class="artwork-preview-box" id="artwork-container">
-              <p>Loading proof...</p>
-            </div>
-            <a href="#" id="download-btn" class="btn-download" target="_blank">View / Download PDF</a>
-          </div>
-        </div>
-
-        <div class="card">
-          <div class="card-header">Your Decision</div>
-          <div class="card-body">
-            <div id="success-screen" class="hidden" style="text-align:center;">
-              <h2 style="color:#5cb85c;">✓ Submitted</h2>
-              <p>Thank you for your response.</p>
-            </div>
-
-            <form id="approval-form">
-              <div class="form-group">
-                <label style="font-size:12px; font-weight:bold;">APPROVER NAME *</label>
-                <input type="text" name="approver_name" class="form-control" required>
-              </div>
-
-              <div class="form-group">
-                <label style="font-size:12px; font-weight:bold;">DECISION *</label>
-                <select name="status" class="form-control" required onchange="toggleChanges(this.value)">
-                  <option value="">-- Select --</option>
-                  <option value="Approved">✅ Approved (Proceed to Production)</option>
-                  <option value="Changes Requested">🔄 Changes Requested</option>
-                </select>
-              </div>
-
-              <div id="changes-field" class="form-group hidden">
-                <label style="font-size:12px; font-weight:bold;">DESCRIPTION OF CHANGES *</label>
-                <textarea name="change_details" class="form-control"></textarea>
-              </div>
-
-              <button type="submit" id="submit-btn" class="btn-submit">Submit Approval</button>
-            </form>
-          </div>
-        </div>
-
+    <form id="approval-form">
+      <div class="form-group">
+        <label>Full Name *</label>
+        <input type="text" name="full_name" class="form-control" placeholder="Enter your full name" required>
       </div>
-    </div>
+
+      <div class="form-group">
+        <label>Proof Decision *</label>
+        <select name="status" id="status-select" class="form-control" required onchange="handleStatusChange(this.value)">
+          <option value="">-- Select One --</option>
+          <option value="Approved">✅ Approved (Proceed to Production)</option>
+          <option value="Changes Requested">🔄 Changes Requested (Send New Proof)</option>
+        </select>
+      </div>
+
+      <div id="changes-field" class="form-group hidden">
+        <label>Description of Changes *</label>
+        <textarea name="change_details" class="form-control" placeholder="Please describe the edits you'd like to see..."></textarea>
+      </div>
+
+      <button type="submit" id="submit-btn" class="btn-submit">Submit Decision</button>
+    </form>
   </div>
+</div>
 
-  <script>
-    const N8N_SUBMIT_WEBHOOK = 'https://admart.zeabur.app/webhook/c8c49617-7257-4155-a9e8-bf44dcb24b39';
+<script>
+  // 提交時的 Payload 也要同步更新
+  document.getElementById('approval-form').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const btn = document.getElementById('submit-btn');
+    btn.disabled = true;
+    btn.textContent = 'Processing...';
 
-    // ── 讀取網址參數 (對應您 Code 節點的 qs 拼接) ──
-    const params = new URLSearchParams(window.location.search);
-    const pid      = params.get('pid');      // 用於後端提交 (Podio ID)
-    const orderRef = params.get('ref');      // 顯示給客人的號碼 (700000TEST)
-    const poNumber = params.get('po');       // 顯示給客人的 PO
-    const artwork  = params.get('artwork');  // Dropbox 連結
-    const image    = params.get('image');    // 直接預覽圖連結
+    const formData = new FormData(this);
+    const payload = {
+      pid: pid, // 這是隱藏的 Podio ID
+      approver_name: formData.get('full_name'), // 合併後的姓名
+      status: formData.get('status'),
+      change_details: formData.get('change_details') || '',
+      submitted_at: new Date().toISOString()
+    };
 
-    document.addEventListener('DOMContentLoaded', () => {
-      // 1. 顯示正確的訂單號 (不顯示 pid)
-      document.getElementById('display-order-number').textContent = `ORDER #${orderRef || '—'}`;
-      if (poNumber) {
-        document.getElementById('display-po-number').textContent = `Customer PO: ${poNumber}`;
-      }
-
-      // 2. 處理預覽 (優先使用 image 參數，如果沒有則用 artwork)
-      const container = document.getElementById('artwork-container');
-      const dlBtn = document.getElementById('download-btn');
-
-      if (image) {
-          // 如果有直接圖片連結 (Podio 圖片)
-          container.innerHTML = `<img src="${image}" alt="Proof Image">`;
-      } else if (artwork) {
-          // 如果只有 Dropbox，用 iframe
-          container.innerHTML = `<iframe src="${artwork.replace('dl=0', 'raw=1')}"></iframe>`;
-      } else {
-          container.innerHTML = `<p>Preview not available.</p>`;
-      }
-
-      // 3. 設定下載按鈕 (總是連結到 PDF/Artwork 原始位址)
-      if (artwork) {
-        dlBtn.href = artwork;
-      } else {
-        dlBtn.classList.add('hidden');
-      }
+    fetch(N8N_SUBMIT_WEBHOOK, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    })
+    .then(res => {
+      if (!res.ok) throw new Error();
+      document.getElementById('approval-form').classList.add('hidden');
+      document.getElementById('success-screen').classList.remove('hidden');
+    })
+    .catch(err => {
+      btn.disabled = false;
+      btn.textContent = 'Submit Decision';
+      alert('❌ Submission failed. Please try again.');
     });
+  });
 
-    function toggleChanges(val) {
-      const field = document.getElementById('changes-field');
-      field.classList.toggle('hidden', val !== 'Changes Requested');
-      field.querySelector('textarea').required = (val === 'Changes Requested');
-    }
-
-    // ── 提交表單 ──
-    document.getElementById('approval-form').addEventListener('submit', function(e) {
-      e.preventDefault();
-      const btn = document.getElementById('submit-btn');
-      btn.disabled = true;
-      btn.textContent = 'Submitting...';
-
-      const payload = {
-        pid: pid, // 傳回後端處理 Podio 更新
-        order_number: orderRef,
-        approver_name: new FormData(this).get('approver_name'),
-        status: new FormData(this).get('status'),
-        change_details: new FormData(this).get('change_details') || '',
-        submitted_at: new Date().toISOString()
-      };
-
-      fetch(N8N_SUBMIT_WEBHOOK, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload)
-      })
-      .then(res => {
-        if (!res.ok) throw new Error();
-        document.getElementById('approval-form').classList.add('hidden');
-        document.getElementById('success-screen').classList.remove('hidden');
-      })
-      .catch(() => {
-        btn.disabled = false;
-        btn.textContent = 'Submit Approval';
-        alert('Submission failed. Please try again.');
-      });
-    });
-  </script>
-</body>
-</html>
+  function handleStatusChange(val) {
+    const field = document.getElementById('changes-field');
+    field.classList.toggle('hidden', val !== 'Changes Requested');
+    field.querySelector('textarea').required = (val === 'Changes Requested');
+  }
+</script>
