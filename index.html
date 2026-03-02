@@ -1,77 +1,130 @@
-<script>
-    // 取得 Webhook 地址 (請確保與您 n8n 一致)
-    const N8N_SUBMIT_WEBHOOK = 'https://admart.zeabur.app/webhook/c8c49617-7257-4155-a9e8-bf44dcb24b39';
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Artwork Approval | ADmart Products</title>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600;700&display=swap" rel="stylesheet"/>
+  <style>
+    /* 核心樣式 */
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Source Sans Pro', sans-serif; background: #f5f5f5; color: #333; }
+    .hidden { display: none !important; }
+    .header { background: #fff; padding: 15px 40px; border-bottom: 1px solid #ddd; }
+    .banner { background: #393B3A; color: #fff; padding: 30px; text-align: center; }
+    .container { max-width: 1100px; margin: 30px auto; padding: 0 20px; display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 30px; }
+    @media (max-width: 850px) { .container { grid-template-columns: 1fr; } }
+    .card { background: #fff; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); overflow: hidden; }
+    .card-header { background: #393B3A; color: #fff; padding: 15px; font-weight: bold; }
+    .card-body { padding: 20px; }
+    .preview-box { background: #eee; min-height: 400px; display: flex; align-items: center; justify-content: center; border: 2px dashed #ccc; }
+    .preview-box img, .preview-box iframe { width: 100%; height: 500px; border: none; }
+    .form-group { margin-bottom: 15px; }
+    .form-control { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 4px; }
+    .btn-submit { width: 100%; background: #5cb85c; color: #fff; padding: 15px; border: none; border-radius: 4px; font-weight: bold; cursor: pointer; }
+    #loading { text-align: center; padding: 50px; }
+  </style>
+</head>
+<body>
 
-    // ── 解析 URL 參數 ──
-    const params = new URLSearchParams(window.location.search);
-    const pid      = params.get('pid');      // 隱藏的 Podio ID
-    const orderRef = params.get('ref');      // 要顯示的 700000TEST
-    const poNumber = params.get('po');       // PO 號碼
-    const artwork  = params.get('artwork');  // PDF 連結
-    const image    = params.get('image');    // 圖片預覽連結
+  <div class="header"><img src="https://cdn11.bigcommerce.com/s-mut604cd32/images/stencil/322x115/admart-2022_1641859351__16768.original.png" height="40"></div>
 
-    document.addEventListener('DOMContentLoaded', () => {
-        // 1. 更新標題：顯示 Order Number (ref)
-        const titleEl = document.getElementById('display-order-number');
-        if (titleEl) titleEl.textContent = `ORDER #${orderRef || '—'}`;
-        
-        const poEl = document.getElementById('display-po-number');
-        if (poEl && poNumber) poEl.textContent = `Customer PO: ${poNumber}`;
+  <div id="loading"><h2>Loading Order Details...</h2></div>
 
-        // 2. 處理預覽區域
-        const container = document.getElementById('artwork-container');
-        const dlBtn = document.getElementById('download-btn');
+  <div id="main-content" class="hidden">
+    <div class="banner">
+        <h1 id="order-title">ORDER #——</h1>
+        <p id="po-title" style="color:#AAC568;"></p>
+    </div>
 
-        if (image && image !== 'null' && image !== '') {
-            // 如果有圖片連結，直接顯示圖片
-            container.innerHTML = `<img src="${image}" style="max-width:100%; height:auto;" alt="Proof">`;
-        } else if (artwork && artwork !== 'null' && artwork !== '') {
-            // 如果只有 Dropbox，使用 iframe (確保 raw=1)
-            let finalArt = artwork.replace('dl=0', 'raw=1');
-            container.innerHTML = `<iframe src="${finalArt}" style="width:100%; height:600px; border:none;"></iframe>`;
-        } else {
-            container.innerHTML = `<p>No artwork available for preview.</p>`;
-        }
+    <div class="container">
+      <div class="card">
+        <div class="card-header">ARTWORK PROOF</div>
+        <div class="card-body">
+          <div class="preview-box" id="preview-area"></div>
+          <a href="#" id="dl-btn" class="btn-submit" style="display:block; text-align:center; background:#333; margin-top:10px; text-decoration:none;">Download PDF</a>
+        </div>
+      </div>
 
-        // 3. 設定下載按鈕
-        if (artwork) {
-            dlBtn.href = artwork;
-            dlBtn.classList.remove('hidden');
-        } else {
-            dlBtn.classList.add('hidden');
-        }
-    });
+      <div class="card">
+        <div class="card-header">YOUR DECISION</div>
+        <div class="card-body">
+          <div id="success-msg" class="hidden" style="text-align:center; color:#5cb85c;">
+            <h2>✓ Submitted Successfully</h2>
+          </div>
+          <form id="approval-form">
+            <div class="form-group">
+              <label>Full Name *</label>
+              <input type="text" name="full_name" class="form-control" required>
+            </div>
+            <div class="form-group">
+              <label>Decision *</label>
+              <select name="status" class="form-control" required onchange="document.getElementById('change-box').classList.toggle('hidden', this.value !== 'Changes Requested')">
+                <option value="">-- Select --</option>
+                <option value="Approved">✅ Approved</option>
+                <option value="Changes Requested">🔄 Changes Requested</option>
+              </select>
+            </div>
+            <div id="change-box" class="form-group hidden">
+              <label>Description of Changes *</label>
+              <textarea name="details" class="form-control"></textarea>
+            </div>
+            <button type="submit" id="submit-btn" class="btn-submit">Submit Response</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
 
-    // ── 表單提交邏輯 ──
-    document.getElementById('approval-form').addEventListener('submit', function(e) {
-        e.preventDefault();
-        const btn = document.getElementById('submit-btn');
-        btn.disabled = true;
-        btn.textContent = 'Submitting...';
+  <script>
+    const GET_ORDER_API = 'https://admart.zeabur.app/webhook/get-order';
+    const SUBMIT_API    = 'https://admart.zeabur.app/webhook/c8c49617-7257-4155-a9e8-bf44dcb24b39';
+    
+    const pid = new URLSearchParams(window.location.search).get('pid');
 
-        const payload = {
-            pid: pid, // 傳回 Podio ID 用於更新
-            order_number: orderRef,
-            approver_name: new FormData(this).get('full_name'), // 這是您要的合併姓名
-            status: new FormData(this).get('status'),
-            change_details: new FormData(this).get('change_details') || '',
-            submitted_at: new Date().toISOString()
-        };
-
-        fetch(N8N_SUBMIT_WEBHOOK, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload)
-        })
-        .then(res => {
-            if (!res.ok) throw new Error();
-            document.getElementById('approval-form').classList.add('hidden');
-            document.getElementById('success-screen').classList.remove('hidden');
-        })
-        .catch(() => {
-            btn.disabled = false;
-            btn.textContent = 'Submit Decision';
-            alert('Submission failed. Please check your connection.');
+    window.onload = () => {
+      if (!pid) { document.getElementById('loading').innerHTML = "<h2>Invalid Link</h2>"; return; }
+      
+      // 拿 PID 問 n8n 資料
+      fetch(`${GET_ORDER_API}?pid=${pid}`)
+        .then(res => res.json())
+        .then(data => {
+          document.getElementById('loading').classList.add('hidden');
+          document.getElementById('main-content').classList.remove('hidden');
+          
+          document.getElementById('order-title').textContent = `ORDER #${data.order_number}`;
+          if(data.po_number) document.getElementById('po-title').textContent = `PO: ${data.po_number}`;
+          
+          const preview = document.getElementById('preview-area');
+          if (data.image_url) {
+            preview.innerHTML = `<img src="${data.image_url}">`;
+          } else if (data.artwork_url) {
+            preview.innerHTML = `<iframe src="${data.artwork_url.replace('dl=0','raw=1')}"></iframe>`;
+          }
+          document.getElementById('dl-btn').href = data.artwork_url || "#";
         });
-    });
-</script>
+    };
+
+    document.getElementById('approval-form').onsubmit = (e) => {
+      e.preventDefault();
+      const btn = document.getElementById('submit-btn');
+      btn.disabled = true;
+      btn.textContent = "Sending...";
+
+      fetch(SUBMIT_API, {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+          pid: pid,
+          approver_name: e.target.full_name.value,
+          status: e.target.status.value,
+          change_details: e.target.details.value
+        })
+      }).then(() => {
+        document.getElementById('approval-form').classList.add('hidden');
+        document.getElementById('success-msg').classList.remove('hidden');
+      });
+    };
+  </script>
+</body>
+</html>
