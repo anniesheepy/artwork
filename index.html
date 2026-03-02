@@ -6,12 +6,10 @@
   <title>Artwork Proof Approval | ADmart Products</title>
   <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400;600;700&display=swap" rel="stylesheet"/>
   <style>
-    /* 全域與結構樣式 */
+    /* 這裡保留之前精美的樣式設定... */
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: 'Source Sans Pro', Arial, Helvetica, sans-serif; color: #393B3A; background: #f5f5f5; font-size: 16px; line-height: 1.6; }
     .hidden { display: none !important; }
-
-    /* 頁首與導覽列 */
     .site-header { background: #fff; border-bottom: 1px solid #e0e0e0; padding: 12px 40px; display: flex; align-items: center; justify-content: space-between; }
     .site-header img { height: 50px; width: auto; }
     .site-header .contact-info { font-size: 14px; color: #666; text-align: right; }
@@ -19,9 +17,178 @@
     .site-nav { background: #393B3A; padding: 0 40px; display: flex; align-items: center; }
     .site-nav .nav-brand { background: #5cb85c; color: #fff; padding: 12px 20px; font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; margin-right: 8px; }
     .site-nav .nav-label { color: rgba(255,255,255,0.7); font-size: 14px; padding: 12px 0; }
-
-    /* 橫幅內容 */
     .page-banner { background: linear-gradient(135deg, #393B3A 0%, #555 100%); color: #fff; text-align: center; padding: 35px 20px; margin-bottom: 30px; }
     .page-banner .order-tag { font-size: 13px; letter-spacing: 2px; text-transform: uppercase; color: #AAC568; margin-bottom: 8px; font-weight: 700; }
     .page-banner h1 { font-size: 32px; font-weight: 700; letter-spacing: 1px; margin: 0; }
-    .page-banner .
+    .page-banner .subtitle { font-size: 16px; color: rgba(255,255,255,0.8); margin-top: 10px; }
+    .main-container { max-width: 1100px; margin: 0 auto 50px; padding: 0 20px; }
+    .content-grid { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 30px; align-items: start; }
+    @media (max-width: 850px) { .content-grid { grid-template-columns: 1fr; } }
+    .card { background: #fff; border: 1px solid #e5e5e5; border-radius: 8px; overflow: hidden; box-shadow: 0 4px 12px rgba(0,0,0,0.05); margin-bottom: 24px; }
+    .card-header { background: #393B3A; color: #fff; padding: 15px 20px; font-size: 15px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; }
+    .card-body { padding: 25px; }
+    .artwork-preview-box { background: #f9f9f9; border: 2px dashed #ddd; border-radius: 6px; min-height: 500px; display: flex; align-items: center; justify-content: center; position: relative; margin-bottom: 20px; }
+    .artwork-preview-box iframe { width: 100%; height: 500px; border: none; border-radius: 4px; }
+    .form-group { margin-bottom: 20px; }
+    .form-group label { display: block; font-size: 13px; font-weight: 700; color: #393B3A; margin-bottom: 6px; text-transform: uppercase; }
+    .form-control { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 4px; font-size: 15px; }
+    .btn-submit { width: 100%; background: #5cb85c; color: #fff; padding: 16px; border: none; border-radius: 4px; font-size: 16px; font-weight: 700; text-transform: uppercase; cursor: pointer; }
+    .btn-download { display: block; text-align: center; background: #393B3A; color: #fff; padding: 12px; border-radius: 4px; text-decoration: none; font-weight: 700; font-size: 14px; margin-top: 10px; }
+    #loading-screen { text-align: center; padding: 100px 20px; }
+    .spinner { width: 40px; height: 40px; border: 4px solid #f3f3f3; border-top: 4px solid #5cb85c; border-radius: 50%; animation: spin 1s linear infinite; margin: 0 auto 20px; }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    .success-screen { text-align: center; padding: 40px 0; }
+  </style>
+</head>
+<body>
+
+  <header class="site-header">
+    <img src="https://cdn11.bigcommerce.com/s-mut604cd32/images/stencil/322x115/admart-2022_1641859351__16768.original.png" alt="ADmart Products" />
+    <div class="contact-info">Need help? <a href="mailto:sales@admartproducts.com">sales@admartproducts.com</a></div>
+  </header>
+
+  <nav class="site-nav">
+    <span class="nav-brand">Step 1: Review</span>
+    <span class="nav-label">Check your artwork carefully.</span>
+  </nav>
+
+  <div id="loading-screen">
+    <div class="spinner"></div>
+    <p>Retrieving your order details...</p>
+  </div>
+
+  <div id="error-screen" class="main-container hidden" style="text-align: center; padding-top: 50px;">
+    <h2 style="color: #d9534f;">⚠️ Link Not Found</h2>
+    <p>We couldn't retrieve your order. Please check the link or contact support.</p>
+  </div>
+
+  <div id="main-content" class="hidden">
+    <div class="page-banner">
+      <div class="order-tag">Action Required</div>
+      <h1 id="display-order-number">ORDER #——</h1>
+      <div class="subtitle">Please review and approve the design to proceed.</div>
+    </div>
+
+    <div class="main-container">
+      <div class="content-grid">
+        
+        <div class="card">
+          <div class="card-header">Digital Proof</div>
+          <div class="card-body">
+            <div class="artwork-preview-box" id="artwork-container"></div>
+            <a href="#" id="download-btn" class="btn-download" target="_blank">Download PDF Proof</a>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header">Your Decision</div>
+          <div class="card-body">
+            <div id="success-screen" class="success-screen hidden">
+              <h2 style="color:#5cb85c;">✓ Response Received</h2>
+              <p>Thank you. Your feedback has been sent to our production team.</p>
+            </div>
+
+            <form id="approval-form">
+              <div class="form-group">
+                <label>Approver Name *</label>
+                <input type="text" name="approver_name" class="form-control" placeholder="Enter your name" required>
+              </div>
+
+              <div class="form-group">
+                <label>Proof Decision *</label>
+                <select name="status" class="form-control" required onchange="handleStatusChange(this.value)">
+                  <option value="">-- Select --</option>
+                  <option value="Approved">✅ Approved (Proceed)</option>
+                  <option value="Changes Requested">🔄 Changes Requested</option>
+                </select>
+              </div>
+
+              <div id="changes-field" class="form-group hidden">
+                <label>Details of Changes *</label>
+                <textarea name="change_details" class="form-control"></textarea>
+              </div>
+
+              <button type="submit" id="submit-btn" class="btn-submit">Submit Approval</button>
+            </form>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const N8N_GET_ORDER_WEBHOOK = 'https://admart.zeabur.app/webhook/get-order';
+    const N8N_SUBMIT_WEBHOOK    = 'https://admart.zeabur.app/webhook/c8c49617-7257-4155-a9e8-bf44dcb24b39';
+
+    const params = new URLSearchParams(window.location.search);
+    const pid    = params.get('pid'); // 後端使用的 ID
+    const token  = params.get('token');
+
+    document.addEventListener('DOMContentLoaded', () => {
+      if (!pid) {
+        showError();
+        return;
+      }
+      fetch(`${N8N_GET_ORDER_WEBHOOK}?pid=${pid}&token=${token}`)
+        .then(res => res.json())
+        .then(data => {
+          // 關鍵修正：將畫面上顯示的內容改為真正的 order_number
+          document.getElementById('display-order-number').textContent = `ORDER #${data.order_number || '—'}`;
+          
+          if (data.artwork_url) {
+            const finalUrl = data.artwork_url.replace('dl=0', 'raw=1');
+            document.getElementById('artwork-container').innerHTML = `<iframe src="${finalUrl}"></iframe>`;
+            document.getElementById('download-btn').href = finalUrl;
+          }
+          
+          document.getElementById('loading-screen').classList.add('hidden');
+          document.getElementById('main-content').classList.remove('hidden');
+        })
+        .catch(showError);
+    });
+
+    function handleStatusChange(val) {
+      const field = document.getElementById('changes-field');
+      field.classList.toggle('hidden', val !== 'Changes Requested');
+      field.querySelector('textarea').required = (val === 'Changes Requested');
+    }
+
+    document.getElementById('approval-form').addEventListener('submit', function(e) {
+      e.preventDefault();
+      const btn = document.getElementById('submit-btn');
+      btn.disabled = true;
+      btn.textContent = 'Submitting...';
+
+      const payload = {
+        pid: pid, // 傳回 Podio 時使用 ID
+        approver_name: new FormData(this).get('approver_name'),
+        status: new FormData(this).get('status'),
+        change_details: new FormData(this).get('change_details') || '',
+        submitted_at: new Date().toISOString()
+      };
+
+      fetch(N8N_SUBMIT_WEBHOOK, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload)
+      })
+      .then(res => {
+        if (!res.ok) throw new Error();
+        document.getElementById('approval-form').classList.add('hidden');
+        document.getElementById('success-screen').classList.remove('hidden');
+      })
+      .catch(() => {
+        btn.disabled = false;
+        btn.textContent = 'Submit Approval';
+        alert('Error submitting response. Please try again.');
+      });
+    });
+
+    function showError() {
+      document.getElementById('loading-screen').classList.add('hidden');
+      document.getElementById('error-screen').classList.remove('hidden');
+    }
+  </script>
+</body>
+</html>
