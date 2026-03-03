@@ -4,76 +4,57 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Artwork Proof Approval | ADmart Products</title>
-  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@300;400;600;700&display=swap" rel="stylesheet"/>
+  <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600;700&display=swap" rel="stylesheet"/>
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { font-family: 'Source Sans Pro', Arial, sans-serif; color: #393B3A; background: #f5f5f5; line-height: 1.6; }
+    body { font-family: 'Source Sans Pro', sans-serif; background: #f5f5f5; color: #393B3A; line-height: 1.6; }
     .hidden { display: none !important; }
 
-    /* Header */
-    .site-header { background: #fff; border-bottom: 1px solid #e0e0e0; padding: 15px 40px; display: flex; align-items: center; justify-content: space-between; }
+    /* Header & Logo */
+    .site-header { background: #fff; border-bottom: 1px solid #ddd; padding: 15px 40px; display: flex; align-items: center; justify-content: space-between; }
     .site-header img { height: 50px; }
-    .contact-info { text-align: right; font-size: 14px; color: #666; }
-    .contact-info a { color: #AAC568; font-weight: 700; text-decoration: none; }
 
-    /* Banner */
-    .site-nav { background: #393B3A; color: #fff; padding: 12px 40px; font-size: 14px; display: flex; align-items: center; }
-    .nav-brand { background: #AAC568; color: #fff; padding: 4px 12px; font-weight: 700; margin-right: 15px; border-radius: 3px; }
-
-    /* Layout Container */
+    /* Main Content Grid */
     .main-container { max-width: 1200px; margin: 30px auto; padding: 0 20px; }
     .content-grid { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 30px; align-items: start; }
     
     @media (max-width: 900px) { .content-grid { grid-template-columns: 1fr; } }
 
-    /* Card Styling */
-    .card { background: #fff; border: 1px solid #ddd; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 10px rgba(0,0,0,0.05); }
-    .card-header { background: #393B3A; color: #fff; padding: 12px 20px; font-weight: 700; text-transform: uppercase; font-size: 14px; }
+    /* Cards */
+    .card { background: #fff; border: 1px solid #e0e0e0; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); overflow: hidden; }
+    .card-header { background: #393B3A; color: #fff; padding: 12px 20px; font-weight: 700; font-size: 14px; text-transform: uppercase; }
     .card-body { padding: 25px; }
 
-    /* Info Pills */
+    /* Info Bar */
     .info-bar { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; }
-    .pill { background: #f0f0f0; padding: 5px 15px; border-radius: 20px; font-size: 13px; border: 1px solid #eee; }
+    .pill { background: #f0f0f0; padding: 5px 15px; border-radius: 20px; font-size: 13px; }
     .pill strong { color: #AAC568; }
 
-    /* Artwork Area */
-    .artwork-preview-box { background: #fafafa; border: 2px dashed #ddd; border-radius: 6px; min-height: 500px; display: flex; align-items: center; justify-content: center; position: relative; margin-bottom: 15px; }
-    .artwork-preview-box img { max-width: 100%; max-height: 700px; display: block; }
+    /* Artwork Preview */
+    .preview-box { background: #eee; border: 2px dashed #ccc; border-radius: 6px; min-height: 500px; display: flex; align-items: center; justify-content: center; }
+    .preview-box img { max-width: 100%; height: auto; display: block; }
 
-    /* Form Elements */
-    .form-group { margin-bottom: 18px; }
-    .form-group label { display: block; font-weight: 700; font-size: 13px; margin-bottom: 5px; color: #555; text-transform: uppercase; }
+    /* Form Fields */
+    .form-group { margin-bottom: 15px; }
+    label { display: block; font-weight: 700; font-size: 13px; margin-bottom: 5px; color: #666; text-transform: uppercase; }
     .form-control { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 4px; font-size: 15px; }
-    textarea.form-control { height: 100px; resize: vertical; }
-
-    .btn { display: block; width: 100%; padding: 15px; border: none; border-radius: 4px; font-weight: 700; cursor: pointer; text-transform: uppercase; transition: 0.3s; font-size: 15px; text-align: center; text-decoration: none; }
-    .btn-submit { background: #AAC568; color: #fff; }
+    
+    .btn { display: block; width: 100%; padding: 15px; border: none; border-radius: 4px; font-weight: 700; cursor: pointer; text-transform: uppercase; transition: 0.3s; }
+    .btn-submit { background: #AAC568; color: #fff; font-size: 16px; }
     .btn-submit:hover { background: #92ae50; }
-    .btn-download { background: #393B3A; color: #fff; margin-top: 10px; }
+    .btn-download { background: #393B3A; color: #fff; text-decoration: none; text-align: center; margin-top: 15px; font-size: 14px; }
 
-    /* Success Screen */
-    .success-screen { text-align: center; padding: 40px 0; }
-    .success-screen h2 { color: #AAC568; margin-bottom: 10px; }
-
-    /* Loading Overlay */
-    #loading-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(255,255,255,0.9); z-index: 999; display: flex; align-items: center; justify-content: center; font-weight: bold; }
+    #loading-overlay { position: fixed; inset: 0; background: rgba(255,255,255,0.9); z-index: 100; display: flex; align-items: center; justify-content: center; font-weight: bold; }
   </style>
 </head>
 <body>
 
-<div id="loading-overlay">Loading Order Details...</div>
+<div id="loading-overlay">FETCHING ORDER DETAILS...</div>
 
 <header class="site-header">
   <img src="https://admartproducts.com/wp-content/uploads/2021/05/ADmart-Logo.png" alt="ADmart Logo">
-  <div class="contact-info">
-    Need Help? <a href="mailto:sales@admartproducts.com">sales@admartproducts.com</a>
-  </div>
+  <div style="font-size: 14px; text-align: right;">Questions? <a href="mailto:sales@admartproducts.com" style="color:#AAC568; font-weight:700; text-decoration:none;">Email Us</a></div>
 </header>
-
-<nav class="site-nav">
-  <span class="nav-brand">PROOF REVIEW</span>
-  <span>Review your artwork carefully before production.</span>
-</nav>
 
 <div class="main-container">
   <div class="content-grid">
@@ -86,54 +67,48 @@
           <div class="pill">PO: <strong id="info-po">---</strong></div>
           <div class="pill">Company: <strong id="info-company">---</strong></div>
         </div>
-        <div class="artwork-preview-box" id="preview-box">
-          <img id="main-img" src="" alt="Artwork Proof" class="hidden">
-          <p id="placeholder">Artwork not found.</p>
+        <div class="preview-box">
+          <img id="main-img" src="" alt="Proof Preview" class="hidden">
+          <p id="placeholder">Loading artwork...</p>
         </div>
-        <a href="#" id="download-btn" class="btn btn-download" target="_blank">View / Download Full PDF</a>
+        <a href="#" id="download-btn" class="btn btn-download" target="_blank">Download Full PDF</a>
       </div>
     </div>
 
     <div class="card">
-      <div class="card-header">✍️ Your Decision</div>
+      <div class="card-header">✍️ Approval Decision</div>
       <div class="card-body">
-        <div id="success-message" class="success-screen hidden">
-          <h2>✅ Submitted!</h2>
-          <p>Thank you for your response. Our team has been notified.</p>
-        </div>
-
         <form id="approval-form">
           <div class="form-group">
-            <label>Your Full Name *</label>
-            <input type="text" name="customer_name" class="form-control" placeholder="Enter your name" required>
+            <label>Full Name *</label>
+            <input type="text" name="customer_name" class="form-control" required placeholder="Enter your full name">
           </div>
-          
           <div class="form-group">
-            <label>Your Email Address *</label>
-            <input type="email" name="customer_email" class="form-control" placeholder="Enter your email" required>
+            <label>Your Email *</label>
+            <input type="email" name="customer_email" class="form-control" required placeholder="Enter your email">
           </div>
-
           <div class="form-group">
-            <label>Decision *</label>
-            <select name="status" id="decision-select" class="form-control" required onchange="handleDecision(this.value)">
-              <option value="">-- Select Decision --</option>
+            <label>Your Decision *</label>
+            <select name="status" class="form-control" required onchange="toggleNotes(this.value)">
+              <option value="">-- Select --</option>
               <option value="Approved">✅ Approved (Ready to Print)</option>
               <option value="Changes Requested">🔄 Changes Requested</option>
             </select>
           </div>
-
-          <div id="notes-area" class="form-group hidden">
-            <label>Description of Changes *</label>
-            <textarea name="notes" id="notes-input" class="form-control" placeholder="What needs to be fixed?"></textarea>
+          <div id="notes-group" class="form-group hidden">
+            <label>What needs to be fixed? *</label>
+            <textarea name="notes" id="notes-field" class="form-control" rows="4"></textarea>
           </div>
-
           <div class="form-group">
-            <label>Upload Reference (Optional)</label>
+            <label>Attachment (Optional)</label>
             <input type="file" name="file_attachment" class="form-control" style="padding: 8px;">
           </div>
-
-          <button type="submit" id="submit-btn" class="btn btn-submit">Submit My Response</button>
+          <button type="submit" id="submit-btn" class="btn btn-submit">Submit Response</button>
         </form>
+        <div id="success-msg" class="hidden" style="text-align: center; padding: 20px;">
+          <h2 style="color:#AAC568;">✅ Submitted!</h2>
+          <p>Thank you. Your response has been recorded.</p>
+        </div>
       </div>
     </div>
 
@@ -141,21 +116,20 @@
 </div>
 
 <script>
-  // 🔗 您的 n8n Webhook
-  const N8N_URL = 'https://admart.zeabur.app/webhook/get-order'; 
-  const N8N_SUBMIT_URL = 'https://admart.zeabur.app/webhook/artwork-approval/'; 
+  const N8N_GET_URL = 'https://admart.zeabur.app/webhook/get-order';
+  const N8N_POST_URL = 'https://admart.zeabur.app/webhook/artwork-approval/';
 
   document.addEventListener('DOMContentLoaded', () => {
     const params = new URLSearchParams(window.location.search);
     const pid = params.get('pid');
 
     if (!pid) {
-      document.getElementById('loading-overlay').innerHTML = '❌ Error: Missing PID in URL.';
+      document.getElementById('loading-overlay').innerHTML = '❌ Missing PID';
       return;
     }
 
-    // ── 1. 載入資料 (GET) ──
-    fetch(`${N8N_URL}?pid=${pid}`)
+    // GET Data
+    fetch(`${N8N_GET_URL}?pid=${pid}`)
       .then(res => res.json())
       .then(data => {
         document.getElementById('info-job').textContent = data.order_number || 'N/A';
@@ -168,18 +142,11 @@
           img.classList.remove('hidden');
           document.getElementById('placeholder').classList.add('hidden');
         }
-
-        if (data.artwork_url) {
-          document.getElementById('download-btn').href = data.artwork_url;
-        }
-
+        if (data.artwork_url) document.getElementById('download-btn').href = data.artwork_url;
         document.getElementById('loading-overlay').classList.add('hidden');
-      })
-      .catch(() => {
-        document.getElementById('loading-overlay').innerHTML = '❌ Error loading data.';
       });
 
-    // ── 2. 提交表單 (POST) ──
+    // POST Submit
     document.getElementById('approval-form').addEventListener('submit', function(e) {
       e.preventDefault();
       const btn = document.getElementById('submit-btn');
@@ -189,35 +156,26 @@
       const formData = new FormData(this);
       formData.append('pid', pid);
 
-      fetch(N8N_SUBMIT_URL, {
-        method: 'POST',
-        body: formData
-      })
-      .then(res => {
-        if (!res.ok) throw new Error();
-        document.getElementById('approval-form').classList.add('hidden');
-        document.getElementById('success-message').classList.remove('hidden');
-      })
-      .catch(() => {
-        alert('Submission failed. Please try again.');
-        btn.disabled = false;
-        btn.textContent = 'Submit My Response';
-      });
+      fetch(N8N_POST_URL, { method: 'POST', body: formData })
+        .then(res => {
+          if (!res.ok) throw new Error();
+          document.getElementById('approval-form').classList.add('hidden');
+          document.getElementById('success-msg').classList.remove('hidden');
+        })
+        .catch(() => {
+          alert('Submission failed.');
+          btn.disabled = false;
+          btn.textContent = 'Submit Response';
+        });
     });
   });
 
-  function handleDecision(val) {
-    const area = document.getElementById('notes-area');
-    const input = document.getElementById('notes-input');
-    if (val === 'Changes Requested') {
-      area.classList.remove('hidden');
-      input.required = true;
-    } else {
-      area.classList.add('hidden');
-      input.required = false;
-    }
+  function toggleNotes(val) {
+    const group = document.getElementById('notes-group');
+    const field = document.getElementById('notes-field');
+    group.classList.toggle('hidden', val !== 'Changes Requested');
+    field.required = (val === 'Changes Requested');
   }
 </script>
-
 </body>
 </html>
