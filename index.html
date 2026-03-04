@@ -6,54 +6,65 @@
   <title>Artwork Proof Approval | ADmart Products</title>
   <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600;700&display=swap" rel="stylesheet"/>
   <style>
+    /* 全域樣式 */
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: 'Source Sans Pro', sans-serif; background: #f5f5f5; color: #393B3A; line-height: 1.6; }
     .hidden { display: none !important; }
 
-    /* Header & Logo */
+    /* 頁首 */
     .site-header { background: #fff; border-bottom: 1px solid #ddd; padding: 15px 40px; display: flex; align-items: center; justify-content: space-between; }
-    .site-header img { height: 50px; }
+    .site-header img { height: 50px; width: auto; }
+    .contact-link { color: #AAC568; font-weight: 700; text-decoration: none; font-size: 14px; }
 
-    /* Main Content Grid */
+    /* 主容器與 60/40 雙欄佈局 */
     .main-container { max-width: 1200px; margin: 30px auto; padding: 0 20px; }
     .content-grid { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 30px; align-items: start; }
     
+    /* 手機版自動改為單欄 */
     @media (max-width: 900px) { .content-grid { grid-template-columns: 1fr; } }
 
-    /* Cards */
+    /* 卡片樣式 */
     .card { background: #fff; border: 1px solid #e0e0e0; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); overflow: hidden; }
-    .card-header { background: #393B3A; color: #fff; padding: 12px 20px; font-weight: 700; font-size: 14px; text-transform: uppercase; }
+    .card-header { background: #393B3A; color: #fff; padding: 12px 20px; font-weight: 700; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; }
     .card-body { padding: 25px; }
 
-    /* Info Bar */
+    /* 資訊列 (Pills) */
     .info-bar { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; }
-    .pill { background: #f0f0f0; padding: 5px 15px; border-radius: 20px; font-size: 13px; }
+    .pill { background: #f0f0f0; padding: 6px 15px; border-radius: 20px; font-size: 13px; border: 1px solid #eee; }
     .pill strong { color: #AAC568; }
 
-    /* Artwork Preview */
-    .preview-box { background: #eee; border: 2px dashed #ccc; border-radius: 6px; min-height: 500px; display: flex; align-items: center; justify-content: center; }
-    .preview-box img { max-width: 100%; height: auto; display: block; }
+    /* 圖片預覽區域 */
+    .preview-box { background: #eee; border: 2px dashed #ccc; border-radius: 6px; min-height: 500px; display: flex; align-items: center; justify-content: center; position: relative; }
+    .preview-box img { max-width: 100%; height: auto; display: block; border-radius: 4px; }
+    #placeholder { color: #999; font-weight: 600; }
 
-    /* Form Fields */
-    .form-group { margin-bottom: 15px; }
-    label { display: block; font-weight: 700; font-size: 13px; margin-bottom: 5px; color: #666; text-transform: uppercase; }
-    .form-control { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 4px; font-size: 15px; }
+    /* 表單元件 */
+    .form-group { margin-bottom: 18px; }
+    label { display: block; font-weight: 700; font-size: 12px; margin-bottom: 6px; color: #666; text-transform: uppercase; }
+    .form-control { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 4px; font-size: 15px; font-family: inherit; }
+    textarea.form-control { height: 110px; resize: vertical; }
     
-    .btn { display: block; width: 100%; padding: 15px; border: none; border-radius: 4px; font-weight: 700; cursor: pointer; text-transform: uppercase; transition: 0.3s; }
-    .btn-submit { background: #AAC568; color: #fff; font-size: 16px; }
-    .btn-submit:hover { background: #92ae50; }
-    .btn-download { background: #393B3A; color: #fff; text-decoration: none; text-align: center; margin-top: 15px; font-size: 14px; }
+    /* 按鈕 */
+    .btn { display: block; width: 100%; padding: 15px; border: none; border-radius: 4px; font-weight: 700; cursor: pointer; text-transform: uppercase; transition: 0.3s; font-size: 15px; text-align: center; text-decoration: none; }
+    .btn-submit { background: #AAC568; color: #fff; border-bottom: 3px solid #8ba355; }
+    .btn-submit:hover { background: #92ae50; transform: translateY(-1px); }
+    .btn-submit:active { transform: translateY(1px); border-bottom: none; }
+    .btn-download { background: #393B3A; color: #fff; margin-top: 15px; }
+    .btn-download:hover { background: #222; }
 
-    #loading-overlay { position: fixed; inset: 0; background: rgba(255,255,255,0.9); z-index: 100; display: flex; align-items: center; justify-content: center; font-weight: bold; }
+    /* 載入與成功畫面 */
+    #loading-overlay { position: fixed; inset: 0; background: rgba(255,255,255,0.95); z-index: 999; display: flex; align-items: center; justify-content: center; font-weight: 700; color: #393B3A; font-size: 18px; letter-spacing: 1px; }
+    .success-screen { text-align: center; padding: 40px 0; }
+    .success-screen h2 { color: #AAC568; margin-bottom: 10px; font-size: 28px; }
   </style>
 </head>
 <body>
 
-<div id="loading-overlay">FETCHING ORDER DETAILS...</div>
+<div id="loading-overlay">LOADING ORDER DETAILS...</div>
 
 <header class="site-header">
   <img src="https://www.admartnas.com/homepage/Website-images/admart_logo.png" alt="ADmart Logo">
-  <div style="font-size: 14px; text-align: right;">Questions? <a href="mailto:sales@admartproducts.com" style="color:#AAC568; font-weight:700; text-decoration:none;">Email Us</a></div>
+  <div>Questions? <a href="mailto:sales@admartproducts.com" class="contact-link">Email Us</a></div>
 </header>
 
 <div class="main-container">
@@ -63,52 +74,62 @@
       <div class="card-header">🖼 Artwork Preview</div>
       <div class="card-body">
         <div class="info-bar">
-          <div class="pill">JOB: <strong id="info-job">---</strong></div>
-          <div class="pill">PO: <strong id="info-po">---</strong></div>
+          <div class="pill">JOB#: <strong id="info-job">---</strong></div>
+          <div class="pill">PO#: <strong id="info-po">---</strong></div>
           <div class="pill">Company: <strong id="info-company">---</strong></div>
         </div>
+
         <div class="preview-box">
           <img id="main-img" src="" alt="Proof Preview" class="hidden">
-          <p id="placeholder">Loading artwork...</p>
+          <p id="placeholder">Fetching artwork from server...</p>
         </div>
-        <a href="#" id="download-btn" class="btn btn-download" target="_blank">Download Full PDF</a>
+
+        <a href="#" id="download-btn" class="btn btn-download" target="_blank">View / Download Full PDF</a>
       </div>
     </div>
 
     <div class="card">
       <div class="card-header">✍️ Approval Decision</div>
       <div class="card-body">
+        
+        <div id="success-screen" class="success-screen hidden">
+          <h2>✅ Submitted!</h2>
+          <p>Your response has been successfully recorded. Our team will review it shortly.</p>
+        </div>
+
         <form id="approval-form">
           <div class="form-group">
-            <label>Full Name *</label>
-            <input type="text" name="customer_name" class="form-control" required placeholder="Enter your full name">
+            <label>Your Full Name *</label>
+            <input type="text" name="name" class="form-control" required placeholder="John Doe">
           </div>
+
           <div class="form-group">
-            <label>Your Email *</label>
-            <input type="email" name="customer_email" class="form-control" required placeholder="Enter your email">
+            <label>Your Email Address *</label>
+            <input type="email" name="email" class="form-control" required placeholder="john@example.com">
           </div>
+
           <div class="form-group">
-            <label>Your Decision *</label>
-            <select name="status" class="form-control" required onchange="toggleNotes(this.value)">
+            <label>Final Decision *</label>
+            <select name="status" class="form-control" required onchange="handleStatusChange(this.value)">
               <option value="">-- Select --</option>
               <option value="Approved">✅ Approved (Ready to Print)</option>
               <option value="Changes Requested">🔄 Changes Requested</option>
             </select>
           </div>
-          <div id="notes-group" class="form-group hidden">
-            <label>What needs to be fixed? *</label>
-            <textarea name="notes" id="notes-field" class="form-control" rows="4"></textarea>
+
+          <div id="changes-field" class="form-group hidden">
+            <label>Description of Changes *</label>
+            <textarea name="change_details" id="change-textarea" class="form-control" placeholder="Please specify what needs to be fixed..."></textarea>
           </div>
+
           <div class="form-group">
-            <label>Attachment (Optional)</label>
+            <label>Upload Reference (Optional)</label>
             <input type="file" name="file_attachment" class="form-control" style="padding: 8px;">
           </div>
-          <button type="submit" id="submit-btn" class="btn btn-submit">Submit Response</button>
+
+          <button type="submit" id="submit-btn" class="btn btn-submit">Submit My Response</button>
         </form>
-        <div id="success-msg" class="hidden" style="text-align: center; padding: 20px;">
-          <h2 style="color:#AAC568;">✅ Submitted!</h2>
-          <p>Thank you. Your response has been recorded.</p>
-        </div>
+
       </div>
     </div>
 
@@ -116,66 +137,99 @@
 </div>
 
 <script>
+  // --- 設定區域 ---
   const N8N_GET_URL = 'https://admart.zeabur.app/webhook/get-order';
-  const N8N_POST_URL = 'https://admart.zeabur.app/webhook/artwork-approval/';
+  const N8N_POST_URL = 'https://admart.zeabur.app/webhook/artwork-approval-submit/';
 
   document.addEventListener('DOMContentLoaded', () => {
     const params = new URLSearchParams(window.location.search);
     const pid = params.get('pid');
 
     if (!pid) {
-      document.getElementById('loading-overlay').innerHTML = '❌ Missing PID';
+      document.getElementById('loading-overlay').innerHTML = '❌ Error: Missing PID in URL.';
       return;
     }
 
-    // GET Data
+    // 1. 抓取訂單詳細資料 (GET)
     fetch(`${N8N_GET_URL}?pid=${pid}`)
-      .then(res => res.json())
+      .then(res => {
+        if (!res.ok) throw new Error();
+        return res.json();
+      })
       .then(data => {
+        // 填入資料到 Pills
         document.getElementById('info-job').textContent = data.order_number || 'N/A';
         document.getElementById('info-po').textContent = data.po_number || 'N/A';
         document.getElementById('info-company').textContent = data.company || 'N/A';
         
+        // 處理預覽圖
         if (data.preview_image) {
           const img = document.getElementById('main-img');
           img.src = data.preview_image;
           img.classList.remove('hidden');
           document.getElementById('placeholder').classList.add('hidden');
+        } else {
+          document.getElementById('placeholder').textContent = 'No preview available.';
         }
-        if (data.artwork_url) document.getElementById('download-btn').href = data.artwork_url;
+
+        // 處理下載連結
+        if (data.artwork_url) {
+          document.getElementById('download-btn').href = data.artwork_url;
+        }
+
+        // 移除 Loading
         document.getElementById('loading-overlay').classList.add('hidden');
+      })
+      .catch(err => {
+        console.error(err);
+        document.getElementById('loading-overlay').innerHTML = '❌ Error: Could not connect to n8n server.';
       });
 
-    // POST Submit
+    // 2. 處理表單提交 (POST)
     document.getElementById('approval-form').addEventListener('submit', function(e) {
       e.preventDefault();
-      const btn = document.getElementById('submit-btn');
-      btn.disabled = true;
-      btn.textContent = 'SUBMITTING...';
+      const submitBtn = document.getElementById('submit-btn');
+      
+      submitBtn.disabled = true;
+      submitBtn.textContent = 'SUBMITTING...';
 
+      // 使用 FormData 以支援檔案上傳
       const formData = new FormData(this);
-      formData.append('pid', pid);
+      formData.append('pid', pid); // 把 pid 也帶回去給 n8n
 
-      fetch(N8N_POST_URL, { method: 'POST', body: formData })
-        .then(res => {
-          if (!res.ok) throw new Error();
-          document.getElementById('approval-form').classList.add('hidden');
-          document.getElementById('success-msg').classList.remove('hidden');
-        })
-        .catch(() => {
-          alert('Submission failed.');
-          btn.disabled = false;
-          btn.textContent = 'Submit Response';
-        });
+      fetch(N8N_POST_URL, {
+        method: 'POST',
+        body: formData
+      })
+      .then(res => {
+        if (!res.ok) throw new Error('Submission failed');
+        // 顯示成功畫面，隱藏表單
+        document.getElementById('approval-form').classList.add('hidden');
+        document.getElementById('success-screen').classList.remove('hidden');
+      })
+      .catch(err => {
+        console.error(err);
+        alert('❌ Error: Could not submit your response. Please try again.');
+        submitBtn.disabled = false;
+        submitBtn.textContent = 'Submit My Response';
+      });
     });
   });
 
-  function toggleNotes(val) {
-    const group = document.getElementById('notes-group');
-    const field = document.getElementById('notes-field');
-    group.classList.toggle('hidden', val !== 'Changes Requested');
-    field.required = (val === 'Changes Requested');
+  // 控制「修改備註」欄位的顯示與隱藏
+  function handleStatusChange(val) {
+    const changesField = document.getElementById('changes-field');
+    const textarea = document.getElementById('change-textarea');
+    
+    if (val === 'Changes Requested') {
+      changesField.classList.remove('hidden');
+      textarea.required = true;
+    } else {
+      changesField.classList.add('hidden');
+      textarea.required = false;
+    }
   }
 </script>
+
 </body>
 </html>
