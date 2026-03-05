@@ -16,10 +16,9 @@
     .site-header img { height: 50px; width: auto; }
     .contact-link { color: #AAC568; font-weight: 700; text-decoration: none; font-size: 14px; }
 
-    /* 主容器與 60/40 雙欄佈局 */
+    /* 主容器 */
     .main-container { max-width: 1200px; margin: 30px auto; padding: 0 20px; }
     .content-grid { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 30px; align-items: start; }
-    
     @media (max-width: 900px) { .content-grid { grid-template-columns: 1fr; } }
 
     /* 卡片樣式 */
@@ -27,25 +26,23 @@
     .card-header { background: #393B3A; color: #fff; padding: 12px 20px; font-weight: 700; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; }
     .card-body { padding: 25px; }
 
-    /* --- 資訊列 (Pills) 修改區域 --- */
+    /* --- 強化後的 Pills 樣式 --- */
     .info-bar { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 25px; }
     .pill { 
-        background: #AAC568;
-        color: #777777;
-        padding: 2px 14px;
-        border-radius: 3px;
-        font-size: 17px;
+        background: #393B3A; 
+        color: #ffffff;      
+        padding: 10px 22px;  
+        border-radius: 30px; 
+        font-size: 18px;     /* 字體加大 */
         font-weight: 600;
-        border: none;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.1); /* 增加立體感 */
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1); 
         display: flex;
         align-items: center;
     }
     .pill strong { 
-        color: #ffffff;     
-        margin-left: 8px;
-        font-weight: 800;
-        text-shadow: 1px 1px 0px rgba(0,0,0,0.2);
+        color: #AAC568;      /* 明亮綠色動態文字 */
+        margin-left: 10px;
+        font-weight: 700;
     }
 
     /* 圖片預覽區域 */
@@ -53,23 +50,15 @@
     .preview-box img { max-width: 100%; height: auto; display: block; border-radius: 4px; }
     #placeholder { color: #999; font-weight: 600; }
 
-    /* 表單元件 */
+    /* 表單與按鈕 */
     .form-group { margin-bottom: 18px; }
     label { display: block; font-weight: 700; font-size: 12px; margin-bottom: 6px; color: #666; text-transform: uppercase; }
-    .form-control { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 4px; font-size: 15px; font-family: inherit; }
-    textarea.form-control { height: 110px; resize: vertical; }
-    
-    /* 按鈕 */
-    .btn { display: block; width: 100%; padding: 15px; border: none; border-radius: 4px; font-weight: 700; cursor: pointer; text-transform: uppercase; transition: 0.3s; font-size: 15px; text-align: center; text-decoration: none; }
+    .form-control { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 4px; font-size: 15px; }
+    .btn { display: block; width: 100%; padding: 15px; border: none; border-radius: 4px; font-weight: 700; cursor: pointer; text-transform: uppercase; text-align: center; text-decoration: none; }
     .btn-submit { background: #AAC568; color: #fff; border-bottom: 3px solid #8ba355; }
-    .btn-submit:hover { background: #92ae50; transform: translateY(-1px); }
-    .btn-submit:active { transform: translateY(1px); border-bottom: none; }
     .btn-download { background: #393B3A; color: #fff; margin-top: 15px; }
-    .btn-download:hover { background: #222; }
 
-    #loading-overlay { position: fixed; inset: 0; background: rgba(255,255,255,0.95); z-index: 999; display: flex; align-items: center; justify-content: center; font-weight: 700; color: #393B3A; font-size: 18px; letter-spacing: 1px; }
-    .success-screen { text-align: center; padding: 40px 0; }
-    .success-screen h2 { color: #AAC568; margin-bottom: 10px; font-size: 28px; }
+    #loading-overlay { position: fixed; inset: 0; background: rgba(255,255,255,0.95); z-index: 999; display: flex; align-items: center; justify-content: center; font-weight: 700; }
   </style>
 </head>
 <body>
@@ -88,9 +77,8 @@
       <div class="card-header">🖼 Artwork Preview</div>
       <div class="card-body">
         <div class="info-bar">
-          <div class="pill">JOB#:<strong id="info-job">32600</strong></div>
-          <div class="pill">PO#:<strong id="info-po">P12345</strong></div>
-          <!-- <div class="pill">Company:<strong id="info-company">ADmart</strong></div> -->
+          <div class="pill">JOB#:<strong id="info-job">---</strong></div>
+          <div class="pill">PO#:<strong id="info-po">---</strong></div>
         </div>
 
         <div class="preview-box">
@@ -105,23 +93,20 @@
     <div class="card">
       <div class="card-header">✍️ Approval Decision</div>
       <div class="card-body">
-        
         <div id="success-screen" class="success-screen hidden">
           <h2>✅ Submitted!</h2>
-          <p>Your response has been successfully recorded. Our team will review it shortly.</p>
+          <p>Your response has been recorded. Our team will review it shortly.</p>
         </div>
 
         <form id="approval-form">
           <div class="form-group">
             <label>Your Full Name *</label>
-            <input type="text" name="name" class="form-control" required placeholder="John Doe">
+            <input type="text" name="name" class="form-control" required>
           </div>
-
           <div class="form-group">
             <label>Your Email Address *</label>
-            <input type="email" name="email" class="form-control" required placeholder="john@example.com">
+            <input type="email" name="email" class="form-control" required>
           </div>
-
           <div class="form-group">
             <label>Final Decision *</label>
             <select name="status" class="form-control" required onchange="handleStatusChange(this.value)">
@@ -130,20 +115,16 @@
               <option value="Changes Requested">🔄 Changes Requested</option>
             </select>
           </div>
-
           <div id="changes-field" class="form-group hidden">
             <label>Description of Changes *</label>
-            <textarea name="change_details" id="change-textarea" class="form-control" placeholder="Please specify what needs to be fixed..."></textarea>
+            <textarea name="change_details" id="change-textarea" class="form-control"></textarea>
           </div>
-
           <div class="form-group">
             <label>Upload Reference (Optional)</label>
-            <input type="file" name="file_attachment" class="form-control" style="padding: 8px;">
+            <input type="file" name="file_attachment" class="form-control">
           </div>
-
           <button type="submit" id="submit-btn" class="btn btn-submit">Submit My Response</button>
         </form>
-
       </div>
     </div>
 
@@ -151,7 +132,6 @@
 </div>
 
 <script>
-  // ... (此處保留您原本的 Script 邏輯，未做變動) ...
   const N8N_GET_URL = 'https://admart.zeabur.app/webhook/get-order';
   const N8N_POST_URL = 'https://admart.zeabur.app/webhook/artwork-approval-submit/';
 
@@ -165,67 +145,6 @@
     }
 
     fetch(`${N8N_GET_URL}?pid=${pid}`)
-      .then(res => { if (!res.ok) throw new Error(); return res.json(); })
+      .then(res => res.json())
       .then(data => {
-        document.getElementById('info-job').textContent = data.order_number || '---';
-        document.getElementById('info-po').textContent = data.po_number || '---';
-        document.getElementById('info-company').textContent = data.company || '---';
-        
-        if (data.preview_image) {
-          const img = document.getElementById('main-img');
-          img.src = data.preview_image;
-          img.classList.remove('hidden');
-          document.getElementById('placeholder').classList.add('hidden');
-        } else {
-          document.getElementById('placeholder').textContent = 'No preview available.';
-        }
-
-        if (data.artwork_url) {
-          document.getElementById('download-btn').href = data.artwork_url;
-        }
-        document.getElementById('loading-overlay').classList.add('hidden');
-      })
-      .catch(err => {
-        console.error(err);
-        document.getElementById('loading-overlay').innerHTML = '❌ Error: Could not connect to n8n server.';
-      });
-
-    document.getElementById('approval-form').addEventListener('submit', function(e) {
-      e.preventDefault();
-      const submitBtn = document.getElementById('submit-btn');
-      submitBtn.disabled = true;
-      submitBtn.textContent = 'SUBMITTING...';
-
-      const formData = new FormData(this);
-      formData.append('pid', pid);
-
-      fetch(N8N_POST_URL, { method: 'POST', body: formData })
-      .then(res => {
-        if (!res.ok) throw new Error('Submission failed');
-        document.getElementById('approval-form').classList.add('hidden');
-        document.getElementById('success-screen').classList.remove('hidden');
-      })
-      .catch(err => {
-        console.error(err);
-        alert('❌ Error: Could not submit your response.');
-        submitBtn.disabled = false;
-        submitBtn.textContent = 'Submit My Response';
-      });
-    });
-  });
-
-  function handleStatusChange(val) {
-    const changesField = document.getElementById('changes-field');
-    const textarea = document.getElementById('change-textarea');
-    if (val === 'Changes Requested') {
-      changesField.classList.remove('hidden');
-      textarea.required = true;
-    } else {
-      changesField.classList.add('hidden');
-      textarea.required = false;
-    }
-  }
-</script>
-
-</body>
-</html>
+        // ---
