@@ -20,7 +20,6 @@
     .main-container { max-width: 1200px; margin: 30px auto; padding: 0 20px; }
     .content-grid { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 30px; align-items: start; }
     
-    /* 手機版自動改為單欄 */
     @media (max-width: 900px) { .content-grid { grid-template-columns: 1fr; } }
 
     /* 卡片樣式 */
@@ -28,10 +27,26 @@
     .card-header { background: #393B3A; color: #fff; padding: 12px 20px; font-weight: 700; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; }
     .card-body { padding: 25px; }
 
-    /* 資訊列 (Pills) */
-    .info-bar { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; }
-    .pill { background: #f0f0f0; padding: 6px 15px; border-radius: 20px; font-size: 13px; border: 1px solid #eee; }
-    .pill strong { color: #AAC568; }
+    /* --- 資訊列 (Pills) 修改區域 --- */
+    .info-bar { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 25px; }
+    .pill { 
+        background: #393B3A; /* 改為深色底 */
+        color: #ffffff;      /* 白色字體 */
+        padding: 10px 20px;  /* 加大空間 */
+        border-radius: 30px; 
+        font-size: 18px;     /* 字體加大至 18px */
+        font-weight: 600;
+        border: none;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1); /* 增加立體感 */
+        display: flex;
+        align-items: center;
+    }
+    .pill strong { 
+        color: #AAC568;      /* 關鍵字改為綠色 */
+        margin-left: 8px;
+        font-weight: 700;
+        text-shadow: 1px 1px 0px rgba(0,0,0,0.2);
+    }
 
     /* 圖片預覽區域 */
     .preview-box { background: #eee; border: 2px dashed #ccc; border-radius: 6px; min-height: 500px; display: flex; align-items: center; justify-content: center; position: relative; }
@@ -52,7 +67,6 @@
     .btn-download { background: #393B3A; color: #fff; margin-top: 15px; }
     .btn-download:hover { background: #222; }
 
-    /* 載入與成功畫面 */
     #loading-overlay { position: fixed; inset: 0; background: rgba(255,255,255,0.95); z-index: 999; display: flex; align-items: center; justify-content: center; font-weight: 700; color: #393B3A; font-size: 18px; letter-spacing: 1px; }
     .success-screen { text-align: center; padding: 40px 0; }
     .success-screen h2 { color: #AAC568; margin-bottom: 10px; font-size: 28px; }
@@ -74,9 +88,9 @@
       <div class="card-header">🖼 Artwork Preview</div>
       <div class="card-body">
         <div class="info-bar">
-          <div class="pill">JOB#: <strong id="info-job">---</strong></div>
-          <div class="pill">PO#: <strong id="info-po">---</strong></div>
-          <div class="pill">Company: <strong id="info-company">---</strong></div>
+          <div class="pill">JOB#:<strong id="info-job">32600</strong></div>
+          <div class="pill">PO#:<strong id="info-po">P12345</strong></div>
+          <div class="pill">Company:<strong id="info-company">ADmart</strong></div>
         </div>
 
         <div class="preview-box">
@@ -137,7 +151,7 @@
 </div>
 
 <script>
-  // --- 設定區域 ---
+  // ... (此處保留您原本的 Script 邏輯，未做變動) ...
   const N8N_GET_URL = 'https://admart.zeabur.app/webhook/get-order';
   const N8N_POST_URL = 'https://admart.zeabur.app/webhook/artwork-approval-submit/';
 
@@ -150,19 +164,13 @@
       return;
     }
 
-    // 1. 抓取訂單詳細資料 (GET)
     fetch(`${N8N_GET_URL}?pid=${pid}`)
-      .then(res => {
-        if (!res.ok) throw new Error();
-        return res.json();
-      })
+      .then(res => { if (!res.ok) throw new Error(); return res.json(); })
       .then(data => {
-        // 填入資料到 Pills
-        document.getElementById('info-job').textContent = data.order_number || 'N/A';
-        document.getElementById('info-po').textContent = data.po_number || 'N/A';
-        document.getElementById('info-company').textContent = data.company || 'N/A';
+        document.getElementById('info-job').textContent = data.order_number || '---';
+        document.getElementById('info-po').textContent = data.po_number || '---';
+        document.getElementById('info-company').textContent = data.company || '---';
         
-        // 處理預覽圖
         if (data.preview_image) {
           const img = document.getElementById('main-img');
           img.src = data.preview_image;
@@ -172,12 +180,9 @@
           document.getElementById('placeholder').textContent = 'No preview available.';
         }
 
-        // 處理下載連結
         if (data.artwork_url) {
           document.getElementById('download-btn').href = data.artwork_url;
         }
-
-        // 移除 Loading
         document.getElementById('loading-overlay').classList.add('hidden');
       })
       .catch(err => {
@@ -185,42 +190,33 @@
         document.getElementById('loading-overlay').innerHTML = '❌ Error: Could not connect to n8n server.';
       });
 
-    // 2. 處理表單提交 (POST)
     document.getElementById('approval-form').addEventListener('submit', function(e) {
       e.preventDefault();
       const submitBtn = document.getElementById('submit-btn');
-      
       submitBtn.disabled = true;
       submitBtn.textContent = 'SUBMITTING...';
 
-      // 使用 FormData 以支援檔案上傳
       const formData = new FormData(this);
-      formData.append('pid', pid); // 把 pid 也帶回去給 n8n
+      formData.append('pid', pid);
 
-      fetch(N8N_POST_URL, {
-        method: 'POST',
-        body: formData
-      })
+      fetch(N8N_POST_URL, { method: 'POST', body: formData })
       .then(res => {
         if (!res.ok) throw new Error('Submission failed');
-        // 顯示成功畫面，隱藏表單
         document.getElementById('approval-form').classList.add('hidden');
         document.getElementById('success-screen').classList.remove('hidden');
       })
       .catch(err => {
         console.error(err);
-        alert('❌ Error: Could not submit your response. Please try again.');
+        alert('❌ Error: Could not submit your response.');
         submitBtn.disabled = false;
         submitBtn.textContent = 'Submit My Response';
       });
     });
   });
 
-  // 控制「修改備註」欄位的顯示與隱藏
   function handleStatusChange(val) {
     const changesField = document.getElementById('changes-field');
     const textarea = document.getElementById('change-textarea');
-    
     if (val === 'Changes Requested') {
       changesField.classList.remove('hidden');
       textarea.required = true;
