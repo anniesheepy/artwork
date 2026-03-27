@@ -77,7 +77,7 @@
 </div>
 
 <header class="site-header">
-  <img src="https://www.admartnas.com/homepage/Website-images/admart_logo.png" alt="ADmart Logo">
+  <img src="https://admartproducts.com/content/webimg/admart_new_aminate_wbg_256.gif" alt="ADmart Logo">
   <div>Questions? <a href="mailto:art@admartproducts.com" class="contact-link">Email Us</a></div>
 </header>
 
@@ -159,20 +159,21 @@
       return;
     }
 
-    // Call n8n Workflow
+    // Fetch data from n8n
     fetch(`${N8N_GET_URL}?pid=${pid}`)
       .then(res => res.json())
       .then(data => {
-        
-        // 1. Check if the "If" node in n8n detected an existing response
-        // This relies on the 'status' field being passed in your Respond to Webhook1 node
-        if (data.status === 'Approved' || data.status === 'Changes Requested') {
+        console.log("Status check:", data.status);
+
+        // TRIGGER BLOCKING OVERLAY:
+        // Matches exact Podio labels: "Approved" or "Need Revise"
+        if (data.status === 'Approved' || data.status === 'Need Revise') {
           document.getElementById('blocked-overlay').classList.remove('hidden');
           document.getElementById('loading-overlay').classList.add('hidden');
           return; 
         }
 
-        // 2. Populate UI with data
+        // POPULATE FORM:
         document.getElementById('info-job').textContent = data.order_number || '---';
         document.getElementById('info-po').textContent = data.po_number || '---';
         
@@ -192,11 +193,13 @@
         document.getElementById('loading-overlay').classList.add('hidden');
       })
       .catch(err => {
-        console.error(err);
-        document.getElementById('loading-overlay').innerHTML = '❌ Error: System connection failure.';
+        console.error("Fetch Error:", err);
+        // Fallback: If n8n doesn't respond properly, show blocked overlay to be safe
+        document.getElementById('blocked-overlay').classList.remove('hidden');
+        document.getElementById('loading-overlay').classList.add('hidden');
       });
 
-    // Handle Submission
+    // Form Submission Logic
     document.getElementById('approval-form').addEventListener('submit', function(e) {
       e.preventDefault();
       const submitBtn = document.getElementById('submit-btn');
@@ -213,7 +216,7 @@
         document.getElementById('success-screen').classList.remove('hidden');
       })
       .catch(err => {
-        alert('❌ Error: Could not submit. Please try again.');
+        alert('❌ Error: Could not submit. Please check your connection.');
         submitBtn.disabled = false;
         submitBtn.textContent = 'Submit My Response';
       });
