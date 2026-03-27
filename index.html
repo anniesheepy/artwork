@@ -6,66 +6,59 @@
   <title>Artwork Proof Approval | ADmart Products</title>
   <link href="https://fonts.googleapis.com/css2?family=Source+Sans+Pro:wght@400;600;700;800&display=swap" rel="stylesheet"/>
   <style>
-    /* 全域樣式 */
+    /* Global Styles */
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body { font-family: 'Source Sans Pro', sans-serif; background: #f5f5f5; color: #393B3A; line-height: 1.6; }
     .hidden { display: none !important; }
 
-    /* 頁首 */
+    /* Header */
     .site-header { background: #fff; border-bottom: 1px solid #ddd; padding: 15px 40px; display: flex; align-items: center; justify-content: space-between; }
     .site-header img { height: 50px; width: auto; }
     .contact-link { color: #AAC568; font-weight: 700; text-decoration: none; font-size: 14px; }
 
-    /* 主容器與 60/40 雙欄佈局 */
+    /* Layout */
     .main-container { max-width: 1200px; margin: 30px auto; padding: 0 20px; }
     .content-grid { display: grid; grid-template-columns: 1.2fr 0.8fr; gap: 30px; align-items: start; }
-    
     @media (max-width: 900px) { .content-grid { grid-template-columns: 1fr; } }
 
-    /* 卡片樣式 */
+    /* Cards */
     .card { background: #fff; border: 1px solid #e0e0e0; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); overflow: hidden; }
     .card-header { background: #393B3A; color: #fff; padding: 12px 20px; font-weight: 700; font-size: 14px; text-transform: uppercase; letter-spacing: 1px; }
     .card-body { padding: 25px; }
 
-    /* --- 資訊列 (Pills) 樣式 --- */
+    /* Info Pills */
     .info-bar { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 25px; }
-    .pill { 
-        background: #AAC568;
-        color: #f0f0f0;      /* 標籤標題顏色 */
-        padding: 6px 24px;
-        border-radius: 4px;
-        font-size: 22px;
-        font-weight: 600;
-        border: none;
-        box-shadow: 0 3px 6px rgba(0,0,0,0.12);
-        display: flex;
-        align-items: center;
-    }
-    .pill strong { 
-        color: #ffffff;      /* 動態數值顏色 (JOB# / PO#) */
-        margin-left: 8px;
-        font-weight: 800;
-        text-shadow: 1px 1px 0px rgba(0,0,0,0.15);
-    }
+    .pill { background: #AAC568; color: #f0f0f0; padding: 6px 24px; border-radius: 4px; font-size: 22px; font-weight: 600; box-shadow: 0 3px 6px rgba(0,0,0,0.12); display: flex; align-items: center; }
+    .pill strong { color: #ffffff; margin-left: 8px; font-weight: 800; text-shadow: 1px 1px 0px rgba(0,0,0,0.15); }
 
-    /* 圖片預覽區域 */
+    /* Preview Area */
     .preview-box { background: #eee; border: 2px dashed #ccc; border-radius: 6px; min-height: 500px; display: flex; align-items: center; justify-content: center; position: relative; }
     .preview-box img { max-width: 100%; height: auto; display: block; border-radius: 4px; }
     #placeholder { color: #999; font-weight: 600; }
 
-    /* 表單元件 */
+    /* Form Elements */
     .form-group { margin-bottom: 18px; }
     label { display: block; font-weight: 700; font-size: 12px; margin-bottom: 6px; color: #666; text-transform: uppercase; }
     .form-control { width: 100%; padding: 12px; border: 1px solid #ccc; border-radius: 4px; font-size: 15px; font-family: inherit; }
     textarea.form-control { height: 110px; resize: vertical; }
     
-    /* 按鈕 */
+    /* Buttons */
     .btn { display: block; width: 100%; padding: 15px; border: none; border-radius: 4px; font-weight: 700; cursor: pointer; text-transform: uppercase; transition: 0.3s; font-size: 15px; text-align: center; text-decoration: none; }
     .btn-submit { background: #AAC568; color: #fff; border-bottom: 3px solid #8ba355; }
     .btn-submit:hover { background: #92ae50; transform: translateY(-1px); }
     .btn-download { background: #393B3A; color: #fff; margin-top: 15px; }
 
+    /* Overlays */
     #loading-overlay { position: fixed; inset: 0; background: rgba(255,255,255,0.95); z-index: 999; display: flex; align-items: center; justify-content: center; font-weight: 700; color: #393B3A; font-size: 18px; letter-spacing: 1px; }
+    
+    #blocked-overlay { 
+      position: fixed; inset: 0; background: #fff; z-index: 1001; 
+      display: flex; flex-direction: column; align-items: center; justify-content: center; 
+      text-align: center; padding: 30px;
+    }
+    .blocked-content h2 { color: #AAC568; font-size: 32px; margin-bottom: 15px; }
+    .blocked-content p { font-size: 18px; color: #393B3A; max-width: 500px; margin-bottom: 25px; }
+    
     .success-screen { text-align: center; padding: 40px 0; }
     .success-screen h2 { color: #AAC568; margin-bottom: 10px; font-size: 28px; }
   </style>
@@ -74,6 +67,15 @@
 
 <div id="loading-overlay">LOADING ORDER DETAILS...</div>
 
+<div id="blocked-overlay" class="hidden">
+  <div class="blocked-content">
+    <img src="https://www.admartnas.com/homepage/Website-images/admart_logo.png" alt="ADmart Logo" style="height:60px; margin-bottom:30px;">
+    <h2>Response Already Received</h2>
+    <p>We've already received a response for this Art Approval Number. Your decision is currently being processed by our team.</p>
+    <p style="font-size: 14px; color: #888;">If you need to make changes, please contact <a href="mailto:art@admartproducts.com" style="color: #AAC568; font-weight: bold;">art@admartproducts.com</a></p>
+  </div>
+</div>
+
 <header class="site-header">
   <img src="https://www.admartnas.com/homepage/Website-images/admart_logo.png" alt="ADmart Logo">
   <div>Questions? <a href="mailto:art@admartproducts.com" class="contact-link">Email Us</a></div>
@@ -81,14 +83,13 @@
 
 <div class="main-container">
   <div class="content-grid">
-    
     <div class="card">
       <div class="card-header">🖼 Artwork Preview</div>
       <div class="card-body">
         <div class="info-bar">
           <div class="pill">JOB#:<strong id="info-job">---</strong></div>
           <div class="pill">PO#:<strong id="info-po">---</strong></div>
-          </div>
+        </div>
 
         <div class="preview-box">
           <img id="main-img" src="" alt="Proof Preview" class="hidden">
@@ -105,7 +106,7 @@
         
         <div id="success-screen" class="success-screen hidden">
           <h2>✅ Submitted!</h2>
-          <p>Your response has been successfully recorded. Our team will review it shortly.</p>
+          <p>Your response has been successfully recorded.</p>
         </div>
 
         <form id="approval-form">
@@ -140,10 +141,8 @@
 
           <button type="submit" id="submit-btn" class="btn btn-submit">Submit My Response</button>
         </form>
-
       </div>
     </div>
-
   </div>
 </div>
 
@@ -160,17 +159,22 @@
       return;
     }
 
+    // Call n8n Workflow
     fetch(`${N8N_GET_URL}?pid=${pid}`)
-      .then(res => { if (!res.ok) throw new Error(); return res.json(); })
+      .then(res => res.json())
       .then(data => {
-        // --- DEBUG 修正：先檢查元素是否存在，避免因找不到 info-company 導致 js 崩潰 ---
-        const jobEl = document.getElementById('info-job');
-        const poEl = document.getElementById('info-po');
-        const compEl = document.getElementById('info-company');
+        
+        // 1. Check if the "If" node in n8n detected an existing response
+        // This relies on the 'status' field being passed in your Respond to Webhook1 node
+        if (data.status === 'Approved' || data.status === 'Changes Requested') {
+          document.getElementById('blocked-overlay').classList.remove('hidden');
+          document.getElementById('loading-overlay').classList.add('hidden');
+          return; 
+        }
 
-        if (jobEl) jobEl.textContent = data.order_number || '---';
-        if (poEl) poEl.textContent = data.po_number || '---';
-        if (compEl) compEl.textContent = data.company || '---';
+        // 2. Populate UI with data
+        document.getElementById('info-job').textContent = data.order_number || '---';
+        document.getElementById('info-po').textContent = data.po_number || '---';
         
         if (data.preview_image) {
           const img = document.getElementById('main-img');
@@ -184,14 +188,15 @@
         if (data.artwork_url) {
           document.getElementById('download-btn').href = data.artwork_url;
         }
-        // 成功載入後隱藏 Loading 畫面
+
         document.getElementById('loading-overlay').classList.add('hidden');
       })
       .catch(err => {
         console.error(err);
-        document.getElementById('loading-overlay').innerHTML = '❌ Error: Could not connect to n8n server.';
+        document.getElementById('loading-overlay').innerHTML = '❌ Error: System connection failure.';
       });
 
+    // Handle Submission
     document.getElementById('approval-form').addEventListener('submit', function(e) {
       e.preventDefault();
       const submitBtn = document.getElementById('submit-btn');
@@ -203,13 +208,12 @@
 
       fetch(N8N_POST_URL, { method: 'POST', body: formData })
       .then(res => {
-        if (!res.ok) throw new Error('Submission failed');
+        if (!res.ok) throw new Error();
         document.getElementById('approval-form').classList.add('hidden');
         document.getElementById('success-screen').classList.remove('hidden');
       })
       .catch(err => {
-        console.error(err);
-        alert('❌ Error: Could not submit your response.');
+        alert('❌ Error: Could not submit. Please try again.');
         submitBtn.disabled = false;
         submitBtn.textContent = 'Submit My Response';
       });
